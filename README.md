@@ -6,6 +6,6 @@
 
 #### Check out my porfolio and feel free to reach me at the email on my profile! 👹
 
-[![Will's GitHub stats](https://github-readme-stats-86v4l8fcp-willkoman.vercel.app/api?username=willkoman&show_icons=true&theme=tokyonight&hide_rank=true)](https://github.com/anuraghazra/github-readme-stats)
+[![Will's GitHub stats](https://github-readme-stats-86v4l8fcp-willkoman.vercel.app/api?username=willkoman&show_icons=true&theme=tokyonight&hide_rank=true)]
 
 ![Top Langs](https://github-readme-stats-86v4l8fcp-willkoman.vercel.app/api/top-langs/?username=willkoman&layout=compact&theme=tokyonight)

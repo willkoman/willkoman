@@ -4,7 +4,7 @@
 
 #### I love to work on all aspects of development, am a gamer forever and always, and take pride in my jack-of-all-trades toolkit
 
-#### Check out my porfolio and feel free to reach me at the email on my profile! 👹
+#### Check out my portfolio and feel free to reach me at the email on my profile! 👹
 
 ![Will's GitHub stats](https://github-readme-stats-86v4l8fcp-willkoman.vercel.app/api?username=willkoman&show_icons=true&theme=tokyonight&hide_rank=true)
 

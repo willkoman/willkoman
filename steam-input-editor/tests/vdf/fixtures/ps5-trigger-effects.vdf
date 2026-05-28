@@ -1,0 +1,51 @@
+"controller_mappings"
+{
+	"version"		"3"
+	"title"			"PS5 Trigger Effects Sample"
+	"description"		"DualSense adaptive-trigger settings; controller_caps verbatim from a real export."
+	"creator"		"76561197960287930"
+	"controller_type"	"controller_ps5"
+	"controller_caps"	"1590271"
+	"actions"
+	{
+		"Default"	{ "title" "Default" "legacy_set" "0" }
+	}
+	"group"
+	{
+		"id"		"0"
+		"mode"		"trigger"
+		"bindings"
+		{
+			"click"		"mouse_button LEFT, Fire"
+		}
+		"settings"
+		{
+			"output_trigger"		"2"
+			"adaptive_trigger_mode"		"3"
+			"adaptive_trigger_start"	"40"
+			"adaptive_trigger_end"		"96"
+			"adaptive_trigger_strength"	"6"
+			"haptic_intensity"		"2"
+		}
+	}
+	"group"
+	{
+		"id"		"1"
+		"mode"		"trigger"
+		"settings"
+		{
+			"output_trigger"		"1"
+			"adaptive_trigger_mode"		"1"
+		}
+	}
+	"preset"
+	{
+		"id"		"0"
+		"name"		"Default"
+		"group_source_bindings"
+		{
+			"0"		"right_trigger active"
+			"1"		"left_trigger active"
+		}
+	}
+}

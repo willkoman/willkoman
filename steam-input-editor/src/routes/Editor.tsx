@@ -3,6 +3,7 @@ import { saveVdfFile } from '../lib/fs/fileSystem';
 import ActionSetTabs from '../components/ActionSetTabs';
 import ControllerView from '../components/ControllerView';
 import GroupInspector from '../components/GroupInspector';
+import ValidationStrip from '../components/ValidationStrip';
 
 export default function Editor() {
   const config = useConfigStore((s) => s.config);
@@ -27,8 +28,8 @@ export default function Editor() {
       <aside className="overflow-y-auto p-3 bg-[var(--color-panel)]">
         <ActionSetTabs />
       </aside>
-      <section className="overflow-y-auto p-4">
-        <div className="flex items-center justify-between mb-3">
+      <section className="overflow-y-auto p-4 space-y-4">
+        <div className="flex items-center justify-between">
           <div>
             <div className="text-sm text-[var(--color-text-dim)]">
               {config.meta.controllerType ?? 'unknown controller'} · v{config.version}
@@ -42,6 +43,7 @@ export default function Editor() {
             Export .vdf
           </button>
         </div>
+        <ValidationStrip />
         <ControllerView />
       </section>
       <aside className="overflow-y-auto p-3 bg-[var(--color-panel)]">

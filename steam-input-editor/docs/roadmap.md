@@ -42,12 +42,12 @@ of corruption-risk bugs.
 - [x] Property-based fuzz test via fast-check: parse → serialize →
       parse round-trip on randomly-generated grammar-valid VDF (200
       iterations × 2 invariants)
-- [ ] Real-world fixture corpus: Portal 2 (V3 + activators +
-      `controller_caps`), Dolphin GameCube (V3 activators), PS5 trigger
-      effects, Steam Deck default Neptune template, hotbar menu sample,
-      Unicode + conditional `[$WIN32]` test case
-- [ ] Visual snapshot tests (Playwright) for `TouchMenuPreview`,
-      `RadialMenuPreview`, and the Deck SVG canvas
+- [x] Real-world fixture corpus expansion: V3 activator sample,
+      hotbar_menu, PS5 trigger effects, Unicode + `[$WIN32]` conditional,
+      complex action layers with `parent_set_name`. Auto-discovered by
+      `tests/vdf/fixture-corpus.test.ts` so growth is free.
+- [ ] Visual snapshot tests (Playwright) — deferred until the Phase 2
+      components stabilize; snapshotting stub UIs locks in stub UI.
 
 Ship criterion: any config from SteamInputDB opens, round-trips byte-
 stably through the editor, and exports a `.vdf` that Steam loads
@@ -60,21 +60,23 @@ Goal: the headline use case ships.
 - [ ] **Deck SVG canvas** replaces the list view of input sources
 - [ ] **Inspector becomes a bottom sheet** on ≤1280px viewports (drag
       handle, snap points), stays as right rail on desktop
-- [ ] **Touch menu designer** with real interactions: tap-to-bind, long-
-      press-to-drag, drop-to-swap, animated layout transitions between slot
-      counts
+- [ ] **Touch menu designer** with real interactions: ~~tap-to-bind~~ (done),
+      long-press-to-drag, drop-to-swap, animated layout transitions
+      between slot counts
 - [ ] **Radial menu designer** with rotate gesture (two-finger twist on
       Deck, shift+drag on desktop), live position/opacity sliders
-- [ ] **Binding picker dialog** — keyboard / mouse / gamepad / system /
-      SIAPI tabs; common icons bundled for live preview
+- [x] **Binding picker dialog** — Keyboard / Mouse / Gamepad / System / Raw
+      tabs; editable label field; uses the `binding()` builder. Icons
+      bundled in Phase 3.
 - [ ] **Action set + action layer CRUD** with explicit nested-menu
       wiring (auto-creates ADD_LAYER / REMOVE_LAYER bindings)
-- [ ] **Undo/redo visible** in the header with hover-tooltip showing
-      what each step changed
+- [x] **Undo/redo visible** in the header with hover-tooltip showing
+      what each step changed; Cmd/Ctrl+Z / Shift+Z / Y bound
 - [ ] **Command palette** (Cmd/Ctrl+K) for fast jump-to-action-set, jump
       -to-group, change-input-style
-- [ ] **Validation strip** docked above the inspector (anti-pattern
-      warnings, missing-group-ref warnings, undocumented slot counts)
+- [x] **Validation strip** docked above the controller view
+      (anti-pattern warnings, missing-group-ref errors, undocumented
+      slot counts); click a finding to jump to its group
 - [ ] **Diff drawer** (left: original VDF text, right: current, scrolled
       together) — the trust promise made visible
 

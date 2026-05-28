@@ -1,0 +1,41 @@
+"controller_mappings"
+{
+	"version"		"3"
+	"title"			"Hotbar Menu Sample"
+	"description"		"Exercises hotbar_menu — shares touch_menu_button_N slot keys with touch and radial."
+	"creator"		"76561197960287930"
+	"controller_type"	"controller_neptune"
+	"actions"
+	{
+		"Default"	{ "title" "Default" "legacy_set" "0" }
+	}
+	"group"
+	{
+		"id"		"0"
+		"mode"		"hotbar_menu"
+		"bindings"
+		{
+			"touch_menu_button_0"	"key_press 1, Slot 1"
+			"touch_menu_button_1"	"key_press 2, Slot 2"
+			"touch_menu_button_2"	"key_press 3, Slot 3"
+			"touch_menu_button_3"	"key_press 4, Slot 4"
+			"touch_menu_button_4"	"key_press 5, Slot 5"
+			"touch_menu_button_5"	"key_press 6, Slot 6"
+			"touch_menu_button_6"	"key_press 7, Slot 7"
+			"touch_menu_button_7"	"key_press 8, Slot 8"
+		}
+		"settings"
+		{
+			"touch_menu_button_count"	"8"
+		}
+	}
+	"preset"
+	{
+		"id"		"0"
+		"name"		"Default"
+		"group_source_bindings"
+		{
+			"0"		"button_diamond active"
+		}
+	}
+}

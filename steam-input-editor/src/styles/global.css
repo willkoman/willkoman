@@ -1,36 +1,107 @@
 @import 'tailwindcss';
 
+/*
+ * Padsmith visual identity — "warm forge".
+ *
+ * Deliberately NOT Vercel/Linear-generic blue. The palette echoes craft tools
+ * (heated metal, leather, brass) to match the "smith" framing of the brand,
+ * while staying readable on the Steam Deck's 1280x800 IPS panel at the brightness
+ * range owners actually use.
+ *
+ * Accent: warm amber (#e8a341) — used sparingly for selection, focus rings,
+ * and the primary action button. Never as a fill on large surfaces.
+ *
+ * Background ramp goes from near-black (#0c0a08) up through panel layers
+ * (#161310 → #1f1a15) so depth comes from value, not from extra strokes.
+ */
+
 @theme {
-  --color-bg: #0f1116;
-  --color-panel: #181b22;
-  --color-panel-2: #20242d;
-  --color-border: #2a2f3a;
-  --color-text: #e6e8ee;
-  --color-text-dim: #9aa1ad;
-  --color-accent: #5da9ff;
-  --color-accent-hover: #7ab8ff;
-  --color-warn: #f2b94b;
-  --color-error: #ef6f6f;
-  --color-success: #6fce8a;
+  --color-bg: #0c0a08;
+  --color-panel: #161310;
+  --color-panel-2: #1f1a15;
+  --color-panel-3: #2a221a;
+  --color-border: #2e2620;
+  --color-border-strong: #443629;
+
+  --color-text: #f0e9dd;
+  --color-text-dim: #a39685;
+  --color-text-muted: #6b6053;
+
+  --color-accent: #e8a341;
+  --color-accent-hover: #f2b75e;
+  --color-accent-dim: #b07f30;
+
+  --color-warn: #f0b84d;
+  --color-error: #e87a5a;
+  --color-success: #87b86a;
+  --color-info: #6fa1c4;
+
+  /* Focus ring — high contrast, always visible */
+  --ring-focus: 0 0 0 2px var(--color-bg), 0 0 0 4px var(--color-accent);
 }
 
 :root {
   color-scheme: dark;
-  font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
   background: var(--color-bg);
   color: var(--color-text);
+  /* Subtle warm paper grain via gradient noise. Keeps panels from feeling sterile. */
+  background-image:
+    radial-gradient(ellipse at top, rgba(232, 163, 65, 0.02), transparent 70%),
+    radial-gradient(ellipse at bottom, rgba(0, 0, 0, 0.4), transparent 60%);
 }
 
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
   margin: 0;
   background: var(--color-bg);
 }
 
-/* Steam Deck Desktop Mode viewport guard.
-   1280x800 is the native screen; we keep tap targets ≥ 44px there. */
+/* Native focus ring for keyboard nav. The harness inherits this everywhere
+   except where we explicitly suppress (e.g. inside scrollables). */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--ring-focus);
+  border-radius: 6px;
+}
+
+/* Steam Deck Desktop Mode viewport — 1280x800, often held in hands. Enforce
+   minimum tap targets and stop browsers from auto-zooming inputs. */
 @media (max-width: 1280px) {
-  button, [role='button'], a {
+  button,
+  [role='button'],
+  a,
+  label,
+  input[type='checkbox'],
+  input[type='radio'] {
     min-height: 44px;
   }
+  input,
+  select,
+  textarea {
+    font-size: 16px; /* iOS/Deck-Firefox: prevents auto-zoom on focus */
+  }
+}
+
+/* Subtle accent-tinted scrollbars so they belong to the theme */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-strong);
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent-dim);
+}
+::-webkit-scrollbar-track {
+  background: var(--color-panel);
 }

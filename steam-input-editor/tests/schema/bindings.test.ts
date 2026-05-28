@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { binding, isKnownVerb, parseBinding, serializeBinding } from '../../src/lib/schema/bindings';
+import {
+  binding,
+  isKnownVerb,
+  parseBinding,
+  serializeBinding,
+} from '../../src/lib/schema/bindings';
 
 describe('parseBinding', () => {
   it('returns null for empty input', () => {

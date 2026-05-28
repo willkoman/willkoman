@@ -8,12 +8,12 @@ This is the "we considered X but went with Y because" file. Future-you (or a con
 
 **Chosen:** Web app (static SPA).
 
-| Pro | Con |
-|---|---|
+| Pro                                                                | Con                                         |
+| ------------------------------------------------------------------ | ------------------------------------------- |
 | Zero install on Steam Deck (open Firefox/Chromium in Desktop Mode) | No direct r/w access to Steam's config dirs |
-| Same URL works on Deck, laptop, phone | Steam can overwrite our files if running |
-| PWA-installable for offline use | File System Access API is Chromium-only |
-| Vite/React stack is portable to Tauri later | We can't watch the filesystem |
+| Same URL works on Deck, laptop, phone                              | Steam can overwrite our files if running    |
+| PWA-installable for offline use                                    | File System Access API is Chromium-only     |
+| Vite/React stack is portable to Tauri later                        | We can't watch the filesystem               |
 
 **Deferred alternative:** A Tauri shell wrapping the same React UI. Adds < 5 MB and gives us direct filesystem access on Deck. Designed for, not built — Phase 2.
 
@@ -25,11 +25,11 @@ This is the "we considered X but went with Y because" file. Future-you (or a con
 
 **Chosen:** Standalone (web app). A Decky plugin is Phase 2.
 
-| Pro of Decky plugin | Con |
-|---|---|
-| Works in Game Mode (no need to switch to Desktop Mode) | Decky-only — useless on a non-Deck Linux machine |
-| Can talk to running Steam directly | Constrained UI (must fit Decky's quick-access shell) |
-| Auto-installs configs | Decky is third-party and has its own update cycle |
+| Pro of Decky plugin                                    | Con                                                  |
+| ------------------------------------------------------ | ---------------------------------------------------- |
+| Works in Game Mode (no need to switch to Desktop Mode) | Decky-only — useless on a non-Deck Linux machine     |
+| Can talk to running Steam directly                     | Constrained UI (must fit Decky's quick-access shell) |
+| Auto-installs configs                                  | Decky is third-party and has its own update cycle    |
 
 A standalone-first design gives us a working tool today; Decky comes next once the editor is solid.
 
@@ -68,12 +68,12 @@ A KeyValues parser is ~300 lines of TS. The cost of writing it once with explici
 
 **Chosen:** React 19 + Vite + TypeScript.
 
-| | React | Svelte | Solid |
-|---|---|---|---|
-| Ecosystem | Largest | Mid | Small |
-| Bundle size | Bigger | Smaller | Smallest |
-| Touch-UI libs | Many | Some | Few |
-| Familiarity | Universal | Trendy | Niche |
+|               | React     | Svelte  | Solid    |
+| ------------- | --------- | ------- | -------- |
+| Ecosystem     | Largest   | Mid     | Small    |
+| Bundle size   | Bigger    | Smaller | Smallest |
+| Touch-UI libs | Many      | Some    | Few      |
+| Familiarity   | Universal | Trendy  | Niche    |
 
 For a tool the user maintains and likely wants others to contribute to, React's ecosystem reach wins. Bundle size is a non-issue for a desktop-mode SPA.
 
@@ -146,3 +146,39 @@ A Tauri shell could load icons from `~/.steam/steam/tenfoot/resource/images/libr
 **Chosen:** Warnings, never errors. Editor never refuses to save.
 
 Steam Input has too many half-documented corners. Hard validation would block legitimate configs. We surface a "Validation" panel listing issues; the user decides.
+
+---
+
+## 13. Source of truth for edits — AST or typed view? (Added 2026-05, the Principal Engineer audit)
+
+**Chosen:** the **AST** in `SteamInputConfig.raw` is the only source of truth. The typed view is a read-only projection rebuilt from the AST on load and after every mutation.
+
+**Rejected:** the 0.0.1 scaffold's claim of "mutate both views" — which in practice meant copying primitives out of the AST into typed objects with no link back. That's a silent data-loss trap as soon as any UI mutator is written: edits to `groups[].bindings[slot]` would never appear in the serialized output, because the serializer walks `raw`.
+
+**Cost of the chosen approach:** mutators have to walk the AST entries and edit by key, not by typed-object reference. More code than naïve typed-view writes.
+
+**Benefit:** serialization is trivially correct (`configToVdf(c) === c.raw`), the round-trip promise survives every mutation, and there's no chance of the two views silently diverging. This is the right trade for a tool whose entire value proposition is "your file goes in, your file comes out, only the bits you changed are different."
+
+---
+
+## 14. Cross-config compare / copy-paste — in or out? (Added 2026-05, scope clarification)
+
+**Chosen:** **out of scope** for v1.0 and beyond.
+
+The 0.1.0 scope draft included a "library + diff + copy-across" feature inspired by misreading the user's "multi-game comparability" requirement. The actual requirement is **support for editing many games' configs over time** (open Minecraft config → edit → save → next session open Overwatch config → edit → save) — not comparing or copying between them.
+
+**Cost of having shipped this:** would have doubled the UI surface, added a multi-document store, and required a diff library — for a feature the user did not want.
+
+**Benefit of removing:** keeps the editor focused on the single-config craft loop, which is the headline use case. Library view in Phase 3 still helps users navigate between configs, but stops short of comparing them.
+
+---
+
+## 15. `controller_caps` typing — int, string, or computed? (Added 2026-05, Domain audit)
+
+**Chosen:** `string`, treated as opaque. Never recompute.
+
+**Rejected:** `number` (0.0.1 default). Implies arithmetic / recomputation is OK. It is not — bit semantics are not publicly documented and wrong caps silently hides configs from Steam's picker.
+
+**Cost:** can't offer a "calculate the right caps for this controller" feature. Could not have offered it correctly anyway.
+
+**Benefit:** can't accidentally corrupt the field by being too helpful. Future schema additions can layer typed accessors on top if Valve ever documents the bits.

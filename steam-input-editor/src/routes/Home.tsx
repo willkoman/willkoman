@@ -22,10 +22,11 @@ export default function Home() {
     <div className="h-full overflow-auto p-8">
       <div className="max-w-3xl mx-auto space-y-8">
         <section>
-          <h1 className="text-3xl font-bold mb-2">Steam Input Editor</h1>
+          <h1 className="text-3xl font-bold mb-2">Padsmith</h1>
           <p className="text-[var(--color-text-dim)]">
-            A visual editor for Steam Input controller schemas. Designed for the Steam Deck. Open a{' '}
-            <code className="px-1.5 py-0.5 rounded bg-[var(--color-panel)] text-sm">.vdf</code> to start.
+            A craft tool for Steam Input controller schemas. Designed for the Steam Deck. Open a{' '}
+            <code className="px-1.5 py-0.5 rounded bg-[var(--color-panel)] text-sm">.vdf</code> to
+            start, or read the in-app guide first.
           </p>
         </section>
 
@@ -53,8 +54,8 @@ export default function Home() {
         <section className="text-sm text-[var(--color-text-dim)] space-y-2">
           <div className="font-semibold text-[var(--color-text)]">Status</div>
           <p>
-            Phase 0 — scaffolded. The parser, schema model, and tests are in place. The UI surfaces below
-            are stubs and will be filled in across phases. See <code>docs/roadmap.md</code>.
+            Phase 0 — scaffolded. The parser, schema model, and tests are in place. The UI surfaces
+            below are stubs and will be filled in across phases. See <code>docs/roadmap.md</code>.
           </p>
         </section>
       </div>

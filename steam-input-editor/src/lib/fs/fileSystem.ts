@@ -27,9 +27,11 @@ export const hasDirectoryAccess = (): boolean =>
 export async function openVdfFile(): Promise<OpenedFile | null> {
   if (hasFileSystemAccess()) {
     try {
-      const [handle] = await (window as unknown as {
-        showOpenFilePicker: (opts: unknown) => Promise<FileSystemFileHandle[]>;
-      }).showOpenFilePicker({
+      const [handle] = await (
+        window as unknown as {
+          showOpenFilePicker: (opts: unknown) => Promise<FileSystemFileHandle[]>;
+        }
+      ).showOpenFilePicker({
         types: [{ description: 'Steam Input VDF', accept: { 'text/plain': ['.vdf'] } }],
         multiple: false,
       });
@@ -74,12 +76,14 @@ export async function saveVdfFile(
   handle?: FileSystemFileHandle
 ): Promise<void> {
   if (handle && 'createWritable' in handle) {
-    const writable = await (handle as unknown as {
-      createWritable: () => Promise<{
-        write: (data: string) => Promise<void>;
-        close: () => Promise<void>;
-      }>;
-    }).createWritable();
+    const writable = await (
+      handle as unknown as {
+        createWritable: () => Promise<{
+          write: (data: string) => Promise<void>;
+          close: () => Promise<void>;
+        }>;
+      }
+    ).createWritable();
     await writable.write(text);
     await writable.close();
     return;

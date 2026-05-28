@@ -1,24 +1,38 @@
-# steam-input-editor
+# Padsmith
 
-A **visual editor for Steam Input controller schemas** (`.vdf` files), designed to be opened on a Steam Deck in Desktop Mode and used touch-first. Built because Steam's built-in configurator is clunky, especially for touchpad menus.
+A **craft tool for Steam Input controller schemas** — a visual editor for
+`controller_*.vdf` files, designed touch-first for the Steam Deck. Built
+because Steam's built-in configurator buries the things that matter
+(touchpad menus, action sets, activators) under several layers of nested
+lists.
 
-> Status: **Phase 0 — scaffolded**. The parser, schema model, planning docs, and app skeleton are in place. UI is stubs. See [`docs/roadmap.md`](docs/roadmap.md).
+> **Status:** v0.1.0 · Trust Layer. The parser, schema model, fixtures,
+> ESLint/Prettier/CI gates, and the visual identity are in place. The full
+> premium editor UI (Deck SVG canvas, bottom-sheet inspector, real
+> menu-designer interactions, undo/redo) is the next milestone.
 >
-> Living here under `willkoman/willkoman/steam-input-editor/` for now — designed to be extracted to its own repo once it leaves Phase 0.
+> The project currently lives under `willkoman/willkoman/steam-input-editor/`
+> on a feature branch; it will be extracted to its own repo at
+> `willkoman/padsmith` before public launch.
 
 ## What it does
 
-- **Open** any existing `controller_*.vdf` (v2 legacy or v3 modern) — yours or pulled from [SteamInputDB](https://www.steaminputdb.com/).
-- **Visualise** action sets, action layers, groups, and presets in a way Steam doesn't.
-- **Design touch menus and radial menus** as actual grids and rings, not vertical lists of "Menu Button N".
-- **Round-trip** without data loss — unknown fields are preserved verbatim.
-- **Export** a `.vdf` you can drop back into Steam.
+- **Opens** any `controller_*.vdf` (V2 legacy or V3 modern Deck)
+- **Round-trips** without data loss — unknown fields preserved verbatim;
+  golden-file snapshots in CI catch any serializer drift
+- **Visualises** action sets, action layers, groups, and presets
+- **Designs touch menus and radial menus** as actual grids and rings, with
+  warnings on unverified layouts and documented anti-patterns
+- **Exports** a `.vdf` you can drop back into Steam
 
-## What it explicitly doesn't do (yet)
+## What it explicitly doesn't do
 
-- Hot-apply configs to a running Steam — Steam owns the files while running. See [`docs/limitations.md`](docs/limitations.md).
-- Browse community configs — [SteamInputDB](https://www.steaminputdb.com/) already does that.
-- Talk to Steamworks Web API — local-only by design.
+- Hot-apply configs to a running Steam — Steam owns the files while running.
+  Workflow: close Steam, save the file, re-open Steam. (Native r/w arrives
+  in Phase 5 via a Tauri shell / Decky plugin.)
+- Compare or copy bindings between two open configs — out of scope.
+- Browse community configs — [SteamInputDB](https://www.steaminputdb.com/)
+  already does that. We link out.
 
 ## Get started
 
@@ -26,31 +40,64 @@ A **visual editor for Steam Input controller schemas** (`.vdf` files), designed 
 cd steam-input-editor
 npm install
 npm run dev          # opens http://localhost:5173
-npm test             # vitest
+npm test             # vitest, 49 tests
+npm run lint         # eslint
+npm run typecheck
 npm run build        # static SPA into dist/
 ```
 
-Open `http://localhost:5173` in a browser (Chromium recommended for File System Access API support).
+Chromium recommended for File System Access API support. Firefox works
+via download-fallback (Steam Deck Desktop Mode ships Firefox; install
+Chrome from Discover for the directly-save flow).
 
 ## On a Steam Deck
 
-1. Switch to **Desktop Mode** (Power → Switch to Desktop).
-2. Open Firefox/Chromium.
-3. Either run `npm run dev` locally and visit it, or load a built copy hosted anywhere.
-4. Drop your `controller_*.vdf` into the editor.
+1. Switch to **Desktop Mode** (Power → Switch to Desktop)
+2. Open Firefox/Chromium
+3. Visit the local dev URL or the hosted build
+4. Drop your `controller_*.vdf` into the editor
 
-A future Tauri / Decky-Loader build will skip the dev-server step. See [`docs/roadmap.md`](docs/roadmap.md) Phase 5.
+## The Trust Layer (what shipped in 0.1.0)
+
+The first specialist audit caught data-corruption-risk bugs in the
+0.0.1 scaffold:
+
+- The **13-slot touch-menu layout was wrong** (we placed slot 12 as a 5th
+  cell in the bottom row; Steam centres it). Shipping that would mis-target
+  user bindings in-game. **Fixed.**
+- A **fictional `gameactions` sub-block on `Group`** was being read into the
+  typed view. There is no such block — game actions are inline bindings.
+  **Removed.**
+- **`controller_caps` was typed as `number`**, implying we might recompute
+  it. Bit semantics are not publicly documented; wrong caps silently hides
+  configs from Steam's picker. **Now opaque `string`, round-tripped only.**
+- The **round-trip test used `JSON.stringify` equality**, which silently
+  agrees on differences VDF semantics actually depend on. **Replaced with
+  deep-equal plus golden-file snapshots.**
+- **No ESLint config** — the `lint` script in `package.json` would have
+  failed. **Added flat config, gated in CI.**
+
+See [`CHANGELOG.md`](CHANGELOG.md) for the full 0.1.0 delta.
 
 ## Docs
 
-- [`docs/architecture.md`](docs/architecture.md) — what we built and why.
-- [`docs/steam-input-schema.md`](docs/steam-input-schema.md) — the VDF schema we model, both v2 and v3.
-- [`docs/touchpad-menus.md`](docs/touchpad-menus.md) — the headline feature, in detail.
-- [`docs/limitations.md`](docs/limitations.md) — honest list of what's not feasible.
-- [`docs/forks-in-the-road.md`](docs/forks-in-the-road.md) — design decisions with rejected alternatives.
-- [`docs/roadmap.md`](docs/roadmap.md) — phased plan.
-- [`docs/references.md`](docs/references.md) — all sources.
+- [`docs/architecture.md`](docs/architecture.md) — what we built and why; the
+  AST-as-source-of-truth rule
+- [`docs/steam-input-schema.md`](docs/steam-input-schema.md) — VDF schema
+  reference, V2 + V3, with the corrections from the domain audit
+- [`docs/touchpad-menus.md`](docs/touchpad-menus.md) — the headline feature,
+  in detail
+- [`docs/limitations.md`](docs/limitations.md) — honest list of what's not
+  feasible (with mitigations where possible)
+- [`docs/forks-in-the-road.md`](docs/forks-in-the-road.md) — design
+  decisions with rejected alternatives
+- [`docs/roadmap.md`](docs/roadmap.md) — phased plan
+- [`docs/references.md`](docs/references.md) — all sources, with what we
+  used each for
+- [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) — community
+  acknowledgements
+- [`CONTRIBUTING.md`](CONTRIBUTING.md) — the bug-protection rules
 
 ## License
 
-MIT.
+MIT (see [`LICENSE`](LICENSE)).

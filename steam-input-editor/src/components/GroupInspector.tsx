@@ -66,7 +66,10 @@ export default function GroupInspector() {
         </div>
         <ul className="space-y-1 text-xs">
           {Object.entries(group.bindings).map(([slot, value]) => (
-            <li key={slot} className="grid grid-cols-[1fr_2fr] gap-2 py-1 border-b border-[var(--color-border)]">
+            <li
+              key={slot}
+              className="grid grid-cols-[1fr_2fr] gap-2 py-1 border-b border-[var(--color-border)]"
+            >
               <span className="font-mono text-[var(--color-text-dim)]">{slot}</span>
               <span className="break-all">{value}</span>
             </li>
@@ -81,7 +84,10 @@ export default function GroupInspector() {
           </div>
           <ul className="space-y-1 text-xs">
             {Object.entries(group.settings).map(([k, v]) => (
-              <li key={k} className="grid grid-cols-[1fr_2fr] gap-2 py-1 border-b border-[var(--color-border)]">
+              <li
+                key={k}
+                className="grid grid-cols-[1fr_2fr] gap-2 py-1 border-b border-[var(--color-border)]"
+              >
                 <span className="font-mono text-[var(--color-text-dim)]">{k}</span>
                 <span>{v}</span>
               </li>

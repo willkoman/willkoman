@@ -31,8 +31,8 @@ export default function AppShell({ children }: AppShellProps) {
     <div className="h-full flex flex-col bg-[var(--color-bg)]">
       <header className="flex items-center gap-4 px-4 py-3 border-b border-[var(--color-border)] bg-[var(--color-panel)]">
         <div className="flex items-center gap-2">
-          <span className="text-lg font-semibold tracking-tight">Steam Input Editor</span>
-          <span className="text-xs text-[var(--color-text-dim)]">v0.0.1 · Phase 0</span>
+          <span className="text-lg font-semibold tracking-tight">Padsmith</span>
+          <span className="text-xs text-[var(--color-text-dim)]">v0.1.0 · Trust Layer</span>
         </div>
         <nav className="flex items-center gap-1 ml-4">
           {navItem('/', 'Home')}

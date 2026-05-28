@@ -75,3 +75,15 @@ We **cannot** validate that a binding string is semantically valid — Steam its
 ## 10. Won't fight the user
 
 If you want to write something the spec says is wrong, you can. We surface a warning; we don't block save.
+
+## 11. `controller_caps` is opaque
+
+The `controller_caps` field is a capability bitmask Steam uses to filter configs to compatible controllers. The exact bit layout is not publicly documented anywhere we could find. Padsmith stores the value as a verbatim string and never computes, derives, or zeroes it. If you change controllers in a config, the `controller_caps` value will not update — and you generally do not want it to, because wrong caps silently hides the config from Steam's picker. Start from a `controller_base` template for the target controller type instead.
+
+## 12. Touch-menu layouts for 7/12/13 slots are best-guess
+
+Steam renders touch menus at these counts in specific ways that we have not yet visually verified on a Deck. The 0.1.0 build flags these layouts as `verified: false` and shows a warning strip in the preview. Slot counts 2, 4, 9, 16 are well-tested; slot 12 (the 13th slot) in particular has been corrected from the 0.0.1 scaffold's wrong "bottom row of 5" layout to the centred-overlay layout. If you find a layout that differs from what the editor shows, please file an issue with a screenshot from Steam Big Picture / Game Mode.
+
+## 13. We don't model V3 activators as editable yet
+
+Modern V3 configs nest bindings under `inputs.<slot>.activators.<Full_Press|Long_Press|…>.bindings.binding`. Padsmith parses and round-trips this verbatim, but the editor UI cannot yet edit them as activators — you'll see a "raw passthrough" notice on those groups. Typed activator editing is the next deliverable in Phase 1. If you try to use the v2-style flat `bindings` editor on a v3 group that uses activators, your changes will land in a sibling block that Steam ignores. The UI warns about this.

@@ -56,15 +56,17 @@ export default function ControllerView() {
                     </span>
                   )}
                 </span>
-                <span className="text-xs text-[var(--color-text-dim)] text-right">{sourceState}</span>
+                <span className="text-xs text-[var(--color-text-dim)] text-right">
+                  {sourceState}
+                </span>
               </button>
             </li>
           );
         })}
       </ul>
       <div className="text-xs text-[var(--color-text-dim)] pt-4 border-t border-[var(--color-border)]">
-        Phase 1 will replace this list with a clickable Deck SVG illustration showing each input source
-        in its physical position.
+        Phase 1 will replace this list with a clickable Deck SVG illustration showing each input
+        source in its physical position.
       </div>
     </div>
   );

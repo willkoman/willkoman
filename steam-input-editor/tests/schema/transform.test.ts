@@ -22,11 +22,46 @@ describe('configFromVdf', () => {
     expect(cfg.actionSets).toEqual([{ name: 'Default', title: 'Default', legacy: true }]);
   });
 
+  it('preserves controller_caps as an opaque string (never parses the bitmask)', () => {
+    // Bit semantics are not publicly documented; wrong caps silently hides
+    // configs from Steam's picker. We round-trip verbatim and never recompute.
+    const ast = parseVdf(`"controller_mappings" {
+      "version" "3"
+      "controller_type" "controller_xboxone"
+      "controller_caps" "1590271"
+    }`);
+    const cfg = configFromVdf(ast);
+    expect(cfg.meta.controllerCaps).toBe('1590271');
+    expect(typeof cfg.meta.controllerCaps).toBe('string');
+  });
+
+  it('does NOT read a fictional gameactions sub-block on group (the field does not exist)', () => {
+    const ast = parseVdf(`"controller_mappings" {
+      "version" "3"
+      "group" {
+        "id" "0"
+        "mode" "four_buttons"
+        "gameactions" { "ignored" "by_us" }
+      }
+    }`);
+    const cfg = configFromVdf(ast);
+    expect(cfg.groups[0]).toBeDefined();
+    // The Group type has no gameActions field — TypeScript won't even let us
+    // reference it, but the runtime object should also not carry it.
+    const groupBag = cfg.groups[0] as unknown as Record<string, unknown>;
+    expect(groupBag.gameActions).toBeUndefined();
+  });
+
   it('reads groups and presets from the GTAV fixture (v2 legacy)', () => {
     const ast = parseVdf(fixture('gtav-v2.vdf'));
     const cfg = configFromVdf(ast);
     expect(cfg.version).toBe(2);
-    expect(cfg.actionSets.map((s) => s.name)).toEqual(['Menu', 'OnFoot', 'InVehicle', 'InFlyingVehicle']);
+    expect(cfg.actionSets.map((s) => s.name)).toEqual([
+      'Menu',
+      'OnFoot',
+      'InVehicle',
+      'InFlyingVehicle',
+    ]);
     expect(cfg.groups.length).toBeGreaterThanOrEqual(6);
     const group0 = cfg.groups.find((g) => g.id === 0)!;
     expect(group0.mode).toBe('four_buttons');

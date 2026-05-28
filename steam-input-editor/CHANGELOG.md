@@ -6,6 +6,33 @@ All notable changes to Padsmith are documented here. Format follows
 
 ## [Unreleased]
 
+### Added (Phase 2 visual core)
+
+- **`<DeckSvg>`** — stylised top-down Steam Deck illustration with hit
+  regions for every input source. Trackpads, sticks, dpad, ABXY, triggers,
+  bumpers, back paddles, gyro, and centre buttons each mapped to their VDF
+  input-source id (`button_diamond`, `left_trackpad`, `joystick`, …).
+  Bound sources show their input-style label inline; selected source gets
+  the accent stroke; non-group sources (bumpers, paddles, menu buttons)
+  render as informational only. Keyboard-accessible (`tabIndex`,
+  Enter/Space activates), scales responsively at any viewport.
+- **`<ControllerView>` rewrite** — the debug list view is now a "Show
+  details" toggle; the Deck SVG is the primary canvas. Clicking a region
+  selects the active group bound to that source (with fallback to any
+  state if no active wiring exists).
+- **Interactive `<RadialMenuPreview>`** — every slot is now a click target
+  opening the `BindingPicker`; slot count is a live slider (1–20) wired
+  through `setGroupSetting`. Empty slots render dashed outlines; bound
+  slots get the accent stroke. Slot radius scales inversely with count so
+  large rings stay legible.
+- **`<InspectorSurface>`** — viewport-responsive inspector container.
+  Desktop (>1280px) keeps the right-rail layout; Deck (≤1280px) switches
+  to a draggable bottom sheet with collapsed/half/full snap points,
+  pointer-drag support, Esc-to-collapse, and chrome that disappears on
+  desktop. Layout switch is driven by `useIsDeckLayout()`.
+- **`useIsDeckLayout()`** — `matchMedia`-backed hook at 1280px breakpoint;
+  SSR-safe (returns false on server, hydrates on client).
+
 ### Added (Phase 1 closeout + Phase 2 opening moves)
 
 - **Real-world fixture corpus expansion** — 4 new fixtures covering corners of the format the original 3 didn't reach:

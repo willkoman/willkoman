@@ -57,14 +57,16 @@ without complaint.
 
 Goal: the headline use case ships.
 
-- [ ] **Deck SVG canvas** replaces the list view of input sources
-- [ ] **Inspector becomes a bottom sheet** on ≤1280px viewports (drag
-      handle, snap points), stays as right rail on desktop
+- [x] **Deck SVG canvas** replaces the list view of input sources;
+      list survives as a "Show details" toggle for power users
+- [x] **Inspector becomes a bottom sheet** on ≤1280px viewports
+      (collapsed/half/full snap points, drag handle, Esc collapses)
 - [ ] **Touch menu designer** with real interactions: ~~tap-to-bind~~ (done),
       long-press-to-drag, drop-to-swap, animated layout transitions
       between slot counts
-- [ ] **Radial menu designer** with rotate gesture (two-finger twist on
-      Deck, shift+drag on desktop), live position/opacity sliders
+- [x] **Radial menu designer** — ~~tap-to-bind~~ (done) + slot-count slider;
+      rotate gesture (two-finger twist on Deck, shift+drag on desktop)
+      and live position/opacity sliders still pending
 - [x] **Binding picker dialog** — Keyboard / Mouse / Gamepad / System / Raw
       tabs; editable label field; uses the `binding()` builder. Icons
       bundled in Phase 3.

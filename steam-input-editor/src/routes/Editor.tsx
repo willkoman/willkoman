@@ -1,14 +1,17 @@
 import { useConfigStore } from '../lib/state/configStore';
 import { saveVdfFile } from '../lib/fs/fileSystem';
+import { useIsDeckLayout } from '../lib/state/viewport';
 import ActionSetTabs from '../components/ActionSetTabs';
 import ControllerView from '../components/ControllerView';
 import GroupInspector from '../components/GroupInspector';
+import InspectorSurface from '../components/InspectorSurface';
 import ValidationStrip from '../components/ValidationStrip';
 
 export default function Editor() {
   const config = useConfigStore((s) => s.config);
   const fileName = useConfigStore((s) => s.fileName);
   const exportText = useConfigStore((s) => s.exportText);
+  const isDeck = useIsDeckLayout();
 
   if (!config) {
     return (
@@ -24,7 +27,13 @@ export default function Editor() {
   };
 
   return (
-    <div className="h-full grid grid-cols-[260px_1fr_360px] divide-x divide-[var(--color-border)]">
+    <div
+      className={
+        isDeck
+          ? 'h-full grid grid-cols-[200px_1fr] divide-x divide-[var(--color-border)]'
+          : 'h-full grid grid-cols-[260px_1fr_360px] divide-x divide-[var(--color-border)]'
+      }
+    >
       <aside className="overflow-y-auto p-3 bg-[var(--color-panel)]">
         <ActionSetTabs />
       </aside>
@@ -45,10 +54,19 @@ export default function Editor() {
         </div>
         <ValidationStrip />
         <ControllerView />
+        {/* Spacer so the bottom sheet on Deck doesn't cover the bottom of the canvas. */}
+        {isDeck && <div className="h-12" />}
       </section>
-      <aside className="overflow-y-auto p-3 bg-[var(--color-panel)]">
-        <GroupInspector />
-      </aside>
+      {!isDeck && (
+        <InspectorSurface>
+          <GroupInspector />
+        </InspectorSurface>
+      )}
+      {isDeck && (
+        <InspectorSurface>
+          <GroupInspector />
+        </InspectorSurface>
+      )}
     </div>
   );
 }

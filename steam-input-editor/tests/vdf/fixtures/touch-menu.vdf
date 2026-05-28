@@ -1,0 +1,70 @@
+"controller_mappings"
+{
+	"version"		"3"
+	"title"			"Touch Menu Test"
+	"creator"		"76561197960287930"
+	"controller_type"	"controller_neptune"
+	"actions"
+	{
+		"Default"	{ "title" "Default" }
+	}
+	"group"
+	{
+		"id"		"10"
+		"mode"		"touch_menu"
+		"bindings"
+		{
+			"touch_menu_button_0"		"key_press 1, Slot 1"
+			"touch_menu_button_1"		"key_press 2, Slot 2"
+			"touch_menu_button_2"		"key_press 3, Slot 3"
+			"touch_menu_button_3"		"key_press 4, Slot 4"
+			"touch_menu_button_4"		"key_press 5, Slot 5"
+			"touch_menu_button_5"		"key_press 6, Slot 6"
+			"touch_menu_button_6"		"key_press 7, Slot 7"
+			"touch_menu_button_7"		"key_press 8, Slot 8"
+			"touch_menu_button_8"		"key_press 9, Slot 9"
+			"click"				"key_press SHIFT, Confirm"
+		}
+		"settings"
+		{
+			"touch_menu_button_count"	"9"
+			"touchmenu_button_fire_type"	"2"
+			"touch_menu_show_labels"	"1"
+			"touch_menu_opacity"		"85"
+			"touch_menu_position_x"		"55"
+			"touch_menu_position_y"		"60"
+			"touch_menu_scale"		"100"
+		}
+	}
+	"group"
+	{
+		"id"		"11"
+		"mode"		"radial_menu"
+		"bindings"
+		{
+			"touch_menu_button_0"		"key_press F1, Spell 1"
+			"touch_menu_button_1"		"key_press F2, Spell 2"
+			"touch_menu_button_2"		"key_press F3, Spell 3"
+			"touch_menu_button_3"		"key_press F4, Spell 4"
+			"touch_menu_button_4"		"key_press F5, Spell 5"
+			"touch_menu_button_5"		"key_press F6, Spell 6"
+			"touch_menu_button_6"		"key_press F7, Spell 7"
+			"touch_menu_button_7"		"key_press F8, Spell 8"
+		}
+		"settings"
+		{
+			"touch_menu_button_count"	"8"
+			"touchmenu_button_fire_type"	"1"
+		}
+	}
+	"preset"
+	{
+		"id"		"0"
+		"name"		"Default"
+		"group_source_bindings"
+		{
+			"10"		"left_trackpad active"
+			"11"		"right_trackpad active"
+		}
+	}
+}

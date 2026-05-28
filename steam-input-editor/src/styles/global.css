@@ -1,0 +1,36 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-bg: #0f1116;
+  --color-panel: #181b22;
+  --color-panel-2: #20242d;
+  --color-border: #2a2f3a;
+  --color-text: #e6e8ee;
+  --color-text-dim: #9aa1ad;
+  --color-accent: #5da9ff;
+  --color-accent-hover: #7ab8ff;
+  --color-warn: #f2b94b;
+  --color-error: #ef6f6f;
+  --color-success: #6fce8a;
+}
+
+:root {
+  color-scheme: dark;
+  font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  background: var(--color-bg);
+}
+
+/* Steam Deck Desktop Mode viewport guard.
+   1280x800 is the native screen; we keep tap targets ≥ 44px there. */
+@media (max-width: 1280px) {
+  button, [role='button'], a {
+    min-height: 44px;
+  }
+}

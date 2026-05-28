@@ -1,0 +1,130 @@
+"controller_mappings"
+{
+	"version"		"3"
+	"revision"		"42"
+	"title"			"V3 Activator Sample"
+	"description"		"Synthetic V3 config used to verify activator parsing and round-trip."
+	"creator"		"76561197960287930"
+	"controller_type"	"controller_neptune"
+	"controller_caps"	"1590271"
+	"Timestamp"		"-1"
+	"actions"
+	{
+		"Default"
+		{
+			"title"		"Default"
+			"legacy_set"	"0"
+		}
+		"Combat"
+		{
+			"title"		"Combat"
+			"legacy_set"	"0"
+		}
+	}
+	"action_layers"
+	{
+		"AimDownSights"
+		{
+			"title"			"Aim Down Sights"
+			"parent_set_name"	"Combat"
+			"set_layer"		"1"
+		}
+	}
+	"group"
+	{
+		"id"		"0"
+		"mode"		"four_buttons"
+		"inputs"
+		{
+			"button_A"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"xinput_button A, #abutton"
+						}
+						"settings"
+						{
+							"haptic_intensity"	"1"
+						}
+					}
+					"Long_Press"
+					{
+						"bindings"
+						{
+							"binding"		"key_press F, Interact alt"
+						}
+						"settings"
+						{
+							"long_press_time"	"350"
+						}
+					}
+				}
+			}
+			"button_B"
+			{
+				"activators"
+				{
+					"Full_Press"
+					{
+						"bindings"
+						{
+							"binding"		"xinput_button B"
+							"binding"		"controller_action ADD_LAYER 1, with aim layer"
+						}
+					}
+				}
+			}
+		}
+	}
+	"group"
+	{
+		"id"		"1"
+		"mode"		"touch_menu"
+		"bindings"
+		{
+			"touch_menu_button_0"	"key_press 1, Slot 1"
+			"touch_menu_button_1"	"key_press 2, Slot 2"
+			"touch_menu_button_2"	"key_press 3, Slot 3"
+			"touch_menu_button_3"	"key_press 4, Slot 4"
+			"touch_menu_button_4"	"key_press 5, Slot 5"
+			"touch_menu_button_5"	"key_press 6, Slot 6"
+			"touch_menu_button_6"	"key_press 7, Slot 7"
+			"touch_menu_button_7"	"key_press 8, Slot 8"
+			"touch_menu_button_8"	"key_press 9, Slot 9"
+			"touch_menu_button_9"	"key_press 0, Slot 10"
+			"touch_menu_button_10"	"key_press MINUS, Slot 11"
+			"touch_menu_button_11"	"key_press EQUALS, Slot 12"
+			"touch_menu_button_12"	"key_press T, Centred slot"
+		}
+		"settings"
+		{
+			"touch_menu_button_count"	"13"
+			"touchmenu_button_fire_type"	"2"
+			"touch_menu_show_labels"	"1"
+		}
+	}
+	"preset"
+	{
+		"id"		"0"
+		"name"		"Default"
+		"group_source_bindings"
+		{
+			"0"		"button_diamond active"
+			"1"		"left_trackpad active"
+		}
+	}
+	"preset"
+	{
+		"id"		"1"
+		"name"		"Combat"
+		"group_source_bindings"
+		{
+			"0"		"button_diamond active"
+			"1"		"left_trackpad active"
+		}
+	}
+}

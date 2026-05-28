@@ -39,7 +39,13 @@ export default function RadialMenuPreview({ group }: Props) {
         const cy = pos.y * radius;
         return (
           <g key={i}>
-            <circle cx={cx} cy={cy} r={slotRadius} fill="var(--color-panel)" stroke="var(--color-border)" />
+            <circle
+              cx={cx}
+              cy={cy}
+              r={slotRadius}
+              fill="var(--color-panel)"
+              stroke="var(--color-border)"
+            />
             <text
               x={cx}
               y={cy - 2}

@@ -48,28 +48,39 @@ export function configFromVdf(ast: VdfBlock): SteamInputConfig {
 
 function readMeta(root: VdfBlock): ConfigMeta {
   const meta: ConfigMeta = {};
-  const set = (k: keyof ConfigMeta, v: string | undefined) => {
+  const setStr = (
+    k:
+      | 'title'
+      | 'description'
+      | 'creator'
+      | 'progenitor'
+      | 'exportType'
+      | 'controllerCaps'
+      | 'timestamp',
+    v: string | undefined
+  ) => {
     if (v === undefined) return;
-    if (k === 'controllerCaps' || k === 'revision' || k === 'majorRevision' || k === 'minorRevision') {
-      const n = Number.parseInt(v, 10);
-      if (!Number.isNaN(n)) (meta as unknown as Record<string, number>)[k] = n;
-    } else if (k === 'controllerType') {
-      meta.controllerType = v as ControllerType;
-    } else {
-      (meta as unknown as Record<string, string>)[k] = v;
-    }
+    meta[k] = v;
   };
-  set('title', getString(root, 'title'));
-  set('description', getString(root, 'description'));
-  set('creator', getString(root, 'creator'));
-  set('progenitor', getString(root, 'progenitor'));
-  set('exportType', getString(root, 'export_type'));
-  set('controllerType', getString(root, 'controller_type'));
-  set('controllerCaps', getString(root, 'controller_caps'));
-  set('revision', getString(root, 'revision'));
-  set('majorRevision', getString(root, 'major_revision'));
-  set('minorRevision', getString(root, 'minor_revision'));
-  set('timestamp', getString(root, 'Timestamp') ?? getString(root, 'timestamp'));
+  const setInt = (k: 'revision' | 'majorRevision' | 'minorRevision', v: string | undefined) => {
+    if (v === undefined) return;
+    const n = Number.parseInt(v, 10);
+    if (!Number.isNaN(n)) meta[k] = n;
+  };
+  setStr('title', getString(root, 'title'));
+  setStr('description', getString(root, 'description'));
+  setStr('creator', getString(root, 'creator'));
+  setStr('progenitor', getString(root, 'progenitor'));
+  setStr('exportType', getString(root, 'export_type'));
+  const ct = getString(root, 'controller_type');
+  if (ct !== undefined) meta.controllerType = ct as ControllerType;
+  // controller_caps is an opaque bitmask. Stored as string; never parsed,
+  // never recomputed. Wrong caps silently hides the config in Steam's picker.
+  setStr('controllerCaps', getString(root, 'controller_caps'));
+  setInt('revision', getString(root, 'revision'));
+  setInt('majorRevision', getString(root, 'major_revision'));
+  setInt('minorRevision', getString(root, 'minor_revision'));
+  setStr('timestamp', getString(root, 'Timestamp') ?? getString(root, 'timestamp'));
   return meta;
 }
 
@@ -123,10 +134,13 @@ function readGroups(root: VdfBlock): Group[] {
     const bindings = readStringMap(getBlock(block, 'bindings'));
     const settings = readStringMap(getBlock(block, 'settings'));
     const group: Group = { id, mode, bindings, settings };
+    // v3 nested activator tree: inputs.<slot>.activators.<Activator>.bindings.binding
+    // Kept opaque for round-trip; typed editing is Phase 2.
     const inputs = getBlock(block, 'inputs');
     if (inputs) group.inputs = inputs;
-    const gameActions = getBlock(block, 'gameactions');
-    if (gameActions) group.gameActions = gameActions;
+    // NOTE: there is NO `gameactions` sub-block inside controller_mappings groups.
+    // Game-action references are inline bindings like `game_action SetName ActionName`.
+    // The `In Game Actions` file (game_actions_<appid>.vdf) is a separate format.
     groups.push(group);
   }
   return groups;
@@ -177,9 +191,14 @@ function readStringMap(block: VdfBlock | undefined): Record<string, string> {
 /**
  * Serialize a typed config back to a VDF AST.
  *
- * In the current implementation we simply return `config.raw` since edits go
- * through mutator helpers that update both the typed view and the AST. A future
- * version will offer a "rebuild from typed view" path for net-new configs.
+ * Per the architectural rule documented in `types.ts`, the AST in `config.raw`
+ * is the single source of truth. Mutators (see `lib/schema/mutators.ts`) write
+ * to the AST first and rebuild the typed projection. This function returns
+ * `config.raw` as-is, guaranteeing serialized output reflects every accepted
+ * mutation.
+ *
+ * Direct manipulation of `config.groups`, `config.actionSets`, etc. is a bug —
+ * use a mutator or you will not see your changes in the exported `.vdf`.
  */
 export function configToVdf(config: SteamInputConfig): VdfBlock {
   return config.raw;

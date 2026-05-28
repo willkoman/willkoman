@@ -1,17 +1,20 @@
 {
-  "name": "steam-input-editor",
+  "name": "padsmith",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.1.0",
   "type": "module",
-  "description": "Visual editor for Steam Input controller schemas (.vdf), designed for Steam Deck",
+  "description": "Padsmith — a visual editor for Steam Input controller schemas (.vdf), designed for Steam Deck",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:update-golden": "UPDATE_GOLDEN=1 vitest run",
     "typecheck": "tsc -b --noEmit",
-    "lint": "eslint src tests"
+    "lint": "eslint src tests --max-warnings 0",
+    "format": "prettier --write \"src/**/*.{ts,tsx,css}\" \"tests/**/*.{ts,tsx}\" \"docs/**/*.md\" \"*.md\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\" \"tests/**/*.{ts,tsx}\" \"docs/**/*.md\" \"*.md\""
   },
   "dependencies": {
     "react": "^19.0.0",
@@ -20,13 +23,18 @@
     "zustand": "^5.0.2"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.4",
     "@tailwindcss/postcss": "^4.0.0",
     "@types/node": "^25.9.1",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.60.0",
+    "@typescript-eslint/parser": "^8.60.0",
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.20",
     "eslint": "^9.18.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "prettier": "^3.8.3",
     "tailwindcss": "^4.0.0",
     "typescript": "^5.7.2",
     "vite": "^7.0.0",

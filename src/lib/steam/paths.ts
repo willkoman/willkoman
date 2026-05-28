@@ -22,7 +22,8 @@ export const STEAM_PATHS: SteamLocation[] = [
   },
   {
     os: 'linux',
-    template: '~/.local/share/Steam/steamapps/common/Steam Controller Configs/<steamid32>/config/<appid>/controller_neptune.vdf',
+    template:
+      '~/.local/share/Steam/steamapps/common/Steam Controller Configs/<steamid32>/config/<appid>/controller_neptune.vdf',
     purpose: 'Newer per-user, per-Deck path for the same data.',
   },
   {
@@ -37,12 +38,14 @@ export const STEAM_PATHS: SteamLocation[] = [
   },
   {
     os: 'macos',
-    template: '~/Library/Application Support/Steam/userdata/<steamid32>/241100/remote/controller_config/<appid>/',
+    template:
+      '~/Library/Application Support/Steam/userdata/<steamid32>/241100/remote/controller_config/<appid>/',
     purpose: 'Per-user, per-game custom configs.',
   },
   {
     os: 'windows',
-    template: 'C:\\Program Files (x86)\\Steam\\userdata\\<steamid32>\\241100\\remote\\controller_config\\<appid>\\',
+    template:
+      'C:\\Program Files (x86)\\Steam\\userdata\\<steamid32>\\241100\\remote\\controller_config\\<appid>\\',
     purpose: 'Per-user, per-game custom configs.',
   },
 ];

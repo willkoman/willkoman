@@ -1,0 +1,7 @@
+dist/
+node_modules/
+coverage/
+tests/vdf/fixtures/
+tests/vdf/golden/
+*.vdf
+package-lock.json

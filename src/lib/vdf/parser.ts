@@ -20,7 +20,11 @@ import { emptyBlock } from './types';
  */
 
 class ParseError extends Error {
-  constructor(message: string, public line: number, public col: number) {
+  constructor(
+    message: string,
+    public line: number,
+    public col: number
+  ) {
     super(`VDF parse error at ${line}:${col}: ${message}`);
   }
 }
@@ -133,12 +137,24 @@ export class VdfParser {
         const esc = this.peek();
         this.advance();
         switch (esc) {
-          case 'n': result += '\n'; break;
-          case 't': result += '\t'; break;
-          case '\\': result += '\\'; break;
-          case '"': result += '"'; break;
-          case 'r': result += '\r'; break;
-          default: result += esc; break;
+          case 'n':
+            result += '\n';
+            break;
+          case 't':
+            result += '\t';
+            break;
+          case '\\':
+            result += '\\';
+            break;
+          case '"':
+            result += '"';
+            break;
+          case 'r':
+            result += '\r';
+            break;
+          default:
+            result += esc;
+            break;
         }
         continue;
       }
@@ -155,14 +171,28 @@ export class VdfParser {
     let result = '';
     while (this.pos < this.text.length) {
       const ch = this.peek();
-      if (ch === ' ' || ch === '\t' || ch === '\n' || ch === '\r' || ch === '{' || ch === '}' || ch === '"' || ch === '[') break;
+      if (
+        ch === ' ' ||
+        ch === '\t' ||
+        ch === '\n' ||
+        ch === '\r' ||
+        ch === '{' ||
+        ch === '}' ||
+        ch === '"' ||
+        ch === '['
+      )
+        break;
       // a `//` starts a comment; stop before it
       if (ch === '/' && this.peekAt(1) === '/') break;
       result += ch;
       this.advance();
     }
     if (result.length === 0) {
-      throw new ParseError(`expected string, got ${JSON.stringify(this.peek())}`, this.line, this.col);
+      throw new ParseError(
+        `expected string, got ${JSON.stringify(this.peek())}`,
+        this.line,
+        this.col
+      );
     }
     return result;
   }

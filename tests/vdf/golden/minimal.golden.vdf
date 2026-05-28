@@ -1,0 +1,45 @@
+"controller_mappings"
+{
+	"version"		"3"
+	"title"		"Minimal Test"
+	"description"		"Minimal config used by parser tests"
+	"creator"		"76561197960287930"
+	"controller_type"		"controller_neptune"
+	"actions"
+	{
+		"Default"
+		{
+			"title"		"Default"
+			"legacy_set"		"1"
+		}
+	}
+	"group"
+	{
+		"id"		"0"
+		"mode"		"four_buttons"
+		"bindings"
+		{
+			"button_A"		"xinput_button A"
+			"button_B"		"xinput_button B"
+			"button_X"		"xinput_button X"
+			"button_Y"		"xinput_button Y"
+		}
+	}
+	"preset"
+	{
+		"id"		"0"
+		"name"		"Default"
+		"group_source_bindings"
+		{
+			"0"		"button_diamond active"
+		}
+		"switch_bindings"
+		{
+			"bindings"
+			{
+				"left_bumper"		"xinput_button SHOULDER_LEFT"
+				"right_bumper"		"xinput_button SHOULDER_RIGHT"
+			}
+		}
+	}
+}

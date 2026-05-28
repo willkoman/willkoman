@@ -2,14 +2,14 @@
 
 Steam Input ships two on-screen menu types that overlay the running game:
 
-| | **Touch Menu** | **Radial Menu** |
-|---|---|---|
-| Shape | Grid | Ring |
-| Slot count | 2, 4, 7, 9, 12, 13, 16 | 1–20 (≤ 8 on button sources) |
-| Selection | Touch a region | Aim then click/release |
-| Activation styles | Button Click / Button Release / Touch Release / Always | same |
-| Compatible sources | Trackpads, gyro, dpads | Trackpads, joysticks, dpads, button-pads |
-| Renders best on | Trackpads (1:1 touch) | Trackpads + joysticks |
+|                    | **Touch Menu**                                         | **Radial Menu**                          |
+| ------------------ | ------------------------------------------------------ | ---------------------------------------- |
+| Shape              | Grid                                                   | Ring                                     |
+| Slot count         | 2, 4, 7, 9, 12, 13, 16                                 | 1–20 (≤ 8 on button sources)             |
+| Selection          | Touch a region                                         | Aim then click/release                   |
+| Activation styles  | Button Click / Button Release / Touch Release / Always | same                                     |
+| Compatible sources | Trackpads, gyro, dpads                                 | Trackpads, joysticks, dpads, button-pads |
+| Renders best on    | Trackpads (1:1 touch)                                  | Trackpads + joysticks                    |
 
 Both are stored in the VDF as ordinary `group` blocks with `mode = "touch_menu"` or `"radial_menu"`. See `steam-input-schema.md` for the field reference.
 
@@ -38,17 +38,22 @@ A visual grid that matches the in-game overlay exactly. Each slot:
 Layout per `touch_menu_button_count`:
 
 ```
- 2 : ▢ ▢                  4 : ▢ ▢          7 :  ▢ ▢ ▢          9 :  ▢ ▢ ▢
-                              ▢ ▢                ▢ ▢ ▢               ▢ ▢ ▢
-                                                   ▢                  ▢ ▢ ▢
+ 2 : ▢ ▢                  4 : ▢ ▢          7 :  ▢ . ▢          9 :  ▢ ▢ ▢
+                              ▢ ▢               ▢ ▢ ▢               ▢ ▢ ▢
+                                                ▢ . ▢               ▢ ▢ ▢
 
 12 :  ▢ ▢ ▢ ▢            13 :  ▢ ▢ ▢ ▢      16 :  ▢ ▢ ▢ ▢
-       ▢ ▢ ▢ ▢                  ▢ ▢ ▢ ▢            ▢ ▢ ▢ ▢
-       ▢ ▢ ▢ ▢                  ▢ ▢ ▢ ▢ ▢          ▢ ▢ ▢ ▢
-                                                    ▢ ▢ ▢ ▢
+       ▢ ▢ ▢ ▢                  ▢ ◧◨ ▢          ▢ ▢ ▢ ▢
+       ▢ ▢ ▢ ▢                  ▢ ▢ ▢ ▢          ▢ ▢ ▢ ▢
+                                                  ▢ ▢ ▢ ▢
 ```
 
-(Implementation details in `src/components/TouchMenuDesigner.tsx`; slot-index → grid-cell mappings in `src/lib/schema/menuLayouts.ts`.)
+**Verified (we have screenshot evidence):** 2, 4, 9, 16.
+**Unverified (best-guess pending verification on a real Deck):** 7, 12, 13. The UI renders a warning strip when a user opens a config with an unverified slot count.
+
+**The 13-slot fix (2026-05 audit):** slot index `12` is rendered **centred over the middle of the 3×4 grid, spanning two columns of the middle row** — not as a 5th button in a bottom row of 5 as the 0.0.1 scaffold had it. Shipping the wrong layout would have mis-targeted user bindings in-game. Use `isVerifiedTouchMenuLayout(n)` from `src/lib/schema/menuLayouts.ts` to gate features.
+
+(Implementation details in `src/components/TouchMenuPreview.tsx`; slot-index → grid-cell mappings in `src/lib/schema/menuLayouts.ts`.)
 
 ### Radial Menu Designer
 
@@ -61,17 +66,17 @@ A ring rendered as an SVG. Slots are positioned at `angle = (i / count) * 2π - 
 
 ### Settings panel (shared)
 
-| Setting | VDF key | UI |
-|---|---|---|
-| Slot count | `touch_menu_button_count` | Buttons 2/4/7/9/12/13/16 (or 1–20 slider for radial) |
-| Activation style | `touchmenu_button_fire_type` | Radio: Click / Release / Touch-Release / Always |
-| Show labels | `touch_menu_show_labels` | Toggle |
-| Opacity | `touch_menu_opacity` | Slider 0–100 |
-| Horizontal position | `touch_menu_position_x` | Slider 0–100 |
-| Vertical position | `touch_menu_position_y` | Slider 0–100 |
-| Size | `touch_menu_scale` | Slider 50–150 |
-| Click action | `bindings.click` | Binding picker |
-| Center / unselected | `bindings.center` (radial) | Binding picker |
+| Setting             | VDF key                      | UI                                                   |
+| ------------------- | ---------------------------- | ---------------------------------------------------- |
+| Slot count          | `touch_menu_button_count`    | Buttons 2/4/7/9/12/13/16 (or 1–20 slider for radial) |
+| Activation style    | `touchmenu_button_fire_type` | Radio: Click / Release / Touch-Release / Always      |
+| Show labels         | `touch_menu_show_labels`     | Toggle                                               |
+| Opacity             | `touch_menu_opacity`         | Slider 0–100                                         |
+| Horizontal position | `touch_menu_position_x`      | Slider 0–100                                         |
+| Vertical position   | `touch_menu_position_y`      | Slider 0–100                                         |
+| Size                | `touch_menu_scale`           | Slider 50–150                                        |
+| Click action        | `bindings.click`             | Binding picker                                       |
+| Center / unselected | `bindings.center` (radial)   | Binding picker                                       |
 
 ### Nested menus
 

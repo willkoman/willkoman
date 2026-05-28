@@ -7,32 +7,42 @@ const fixture = (name: string) =>
   readFileSync(join(import.meta.dirname, 'fixtures', name), 'utf-8');
 
 /**
- * Parse → serialize → parse should produce an equivalent AST.
+ * Round-trip safety net.
  *
- * We don't expect byte-exact text equivalence (whitespace normalises), but
- * the second parse must produce the same logical tree. This protects against
- * silent data loss in the parser/serializer round trip.
+ * Old version of this file used `JSON.stringify` for AST equality, which is
+ * weaker than it looks: it agrees on key-order differences for OBJECTS (where
+ * order is irrelevant) but disagrees on minor whitespace/escape changes in
+ * VALUES. Since our AST uses ordered arrays of `{key, value}` entries, the
+ * stringify approach happened to work by accident. We now use Vitest's
+ * `toEqual` which deep-compares structurally with explicit array-order
+ * semantics — that's what we actually want.
+ *
+ * The invariants we assert:
+ *   (a) parse → serialize → parse round-trips structurally
+ *   (b) serialize → parse → serialize is byte-stable (idempotent)
+ *
+ * What we still do NOT assert (and need a "golden file" test for):
+ *   - serializer output exactly matches a canonical form per fixture
+ *   - Steam itself accepts the output (requires a Deck in CI)
  */
-function structurallyEqual(a: unknown, b: unknown): boolean {
-  return JSON.stringify(a) === JSON.stringify(b);
-}
+
+const FIXTURES = ['minimal.vdf', 'gtav-v2.vdf', 'touch-menu.vdf'] as const;
 
 describe('round trip', () => {
-  for (const name of ['minimal.vdf', 'gtav-v2.vdf', 'touch-menu.vdf']) {
-    it(`parses → serializes → parses to an equivalent AST for ${name}`, () => {
+  for (const name of FIXTURES) {
+    it(`parse → serialize → parse yields an equivalent AST for ${name}`, () => {
       const text = fixture(name);
       const first = parseVdf(text);
-      const out = serializeVdf(first);
-      const second = parseVdf(out);
-      expect(structurallyEqual(first, second)).toBe(true);
+      const second = parseVdf(serializeVdf(first));
+      expect(second).toEqual(first);
     });
 
-    it(`serializing twice is idempotent for ${name}`, () => {
+    it(`serialize → parse → serialize is byte-stable for ${name}`, () => {
       const text = fixture(name);
       const ast = parseVdf(text);
       const a = serializeVdf(ast);
       const b = serializeVdf(parseVdf(a));
-      expect(a).toBe(b);
+      expect(b).toBe(a);
     });
   }
 });

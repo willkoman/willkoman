@@ -26,15 +26,22 @@ of corruption-risk bugs.
 - [x] ESLint v9 + Prettier; both gated in CI before tests
 - [x] CHANGELOG, CONTRIBUTING, THIRD_PARTY_NOTICES
 - [x] Touch-menu preview surfaces unverified-layout warning
-- [ ] **Activator typed model** (`Full_Press`, `Long_Press`, `Double_Tap`,
-      `Soft_Press`, `Start_Press`, `Release`, `Chord`, `analog_button`) with
-      fixtures pulled from real V3 configs
-- [ ] **Mutator façade** (`lib/schema/mutators.ts`) — `setBinding`,
-      `setGroupSetting`, `addGroup`, `renameActionSet`, `addActionLayer` —
-      AST-first, typed view rebuilt
-- [ ] **Patch-based undo** (immer patches), capped at 5 MB resident
-- [ ] Property-based fuzz test via fast-check: parse → serialize →
-      parse round-trip on randomly-generated grammar-valid VDF
+- [x] **Activator typed model** (`Full_Press`, `Long_Press`, `Double_Tap`,
+      `Soft_Press`, `Start_Press`, `Release`, `Chord`, `analog_button`) +
+      synthetic V3 fixture `tests/vdf/fixtures/v3-activators.vdf` exercising
+      the `inputs.<slot>.activators.<Activator>.bindings.binding` tree
+      including repeating `binding` keys
+- [x] **Mutator façade** (`lib/schema/mutators.ts`) — `setBinding`,
+      `removeBinding`, `setGroupSetting`, `setGroupMode`, `addGroup`,
+      `removeGroup`, `setMetaField`, `renameActionSet`, `addActionSet`,
+      `removeActionSet`, `setPresetGroupSourceBinding`,
+      `setActivatorBinding`, `appendActivatorBinding`. AST-first via
+      `immer.produceWithPatches`; typed view rebuilt on every call.
+- [x] **Patch-based undo** (immer patches), capped at 5 MB resident.
+      `lib/state/undo.ts` + wired through `useConfigStore`.
+- [x] Property-based fuzz test via fast-check: parse → serialize →
+      parse round-trip on randomly-generated grammar-valid VDF (200
+      iterations × 2 invariants)
 - [ ] Real-world fixture corpus: Portal 2 (V3 + activators +
       `controller_caps`), Dolphin GameCube (V3 activators), PS5 trigger
       effects, Steam Deck default Neptune template, hotbar menu sample,

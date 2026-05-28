@@ -6,14 +6,20 @@ All notable changes to Padsmith are documented here. Format follows
 
 ## [Unreleased]
 
-### Pending Phase 1 (Trust Layer)
+### Added (Phase 1 continued — mutator + undo + property tests)
 
-- Activator typed model (`Full_Press` / `Long_Press` / `Double_Tap` / …) and a real-world V3 fixture exercising it
-- Patch-based undo via `immer` patches; cap at 5 MB total, not entry count
-- Mutator façade (`lib/schema/mutators.ts`) that writes to the AST first
-- Real-world fixture corpus from SteamInputDB (Portal 2, Dolphin GameCube, PS5, Deck default Neptune template, hotbar sample, conditionals + Unicode case)
-- Property-based fuzz tests via `fast-check`
-- Visual snapshot tests for `TouchMenuPreview`, `RadialMenuPreview`, `ControllerView`
+- **`lib/schema/mutators.ts`** — the AST-first mutator façade. Every editor edit must route through these: `setBinding`, `removeBinding`, `setGroupSetting`, `setGroupMode`, `addGroup`, `removeGroup`, `setMetaField`, `renameActionSet`, `addActionSet`, `removeActionSet`, `setPresetGroupSourceBinding`, `setActivatorBinding`, `appendActivatorBinding`. Each uses `immer.produceWithPatches` and returns the new config + forward + inverse patches.
+- **`lib/state/undo.ts`** — patch-based undo history with a 5 MB resident cap (default; configurable). Replaces the previous full-clone-per-edit stack that would have hit 200 MB on long sessions.
+- **`useConfigStore`** rewired to use the patch undo store. `applyMutation()`, `undo()`, `redo()`, `canUndo()`, `canRedo()` exposed.
+- **`ActivatorName` type** for the V3 activator enum (`Full_Press` / `Long_Press` / `Double_Tap` / `Soft_Press` / `Start_Press` / `Release` / `Chord` / `analog_button`).
+- **`tests/vdf/fixtures/v3-activators.vdf`** — synthetic V3 fixture exercising the `inputs.<slot>.activators.<Activator>.bindings.binding` tree, including the repeating `binding` key.
+- **`tests/vdf/property.test.ts`** — fast-check fuzzer over grammar-valid VDF docs. Two invariants asserted across 200 random inputs each: `parse(serialize(parse(d))) ≡ parse(d)` and `serialize` is idempotent.
+- **27 new tests** across mutators, undo, V3 activator parsing, property fuzzing. Total: 76 tests (was 49).
+
+### Pending Phase 1
+
+- Real-world fixture corpus expansion (Portal 2 V3, PS5 trigger effects, Steam Deck default Neptune template, hotbar sample, `[$WIN32]` conditionals + Unicode case)
+- Visual snapshot tests (Playwright) for `TouchMenuPreview`, `RadialMenuPreview`, `ControllerView`
 
 ## [0.1.0] — 2026-05-28
 

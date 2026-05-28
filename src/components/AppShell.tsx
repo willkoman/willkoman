@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useConfigStore } from '../lib/state/configStore';
 
@@ -10,6 +11,33 @@ export default function AppShell({ children }: AppShellProps) {
   const location = useLocation();
   const fileName = useConfigStore((s) => s.fileName);
   const dirty = useConfigStore((s) => s.dirty);
+  const config = useConfigStore((s) => s.config);
+  const undo = useConfigStore((s) => s.undo);
+  const redo = useConfigStore((s) => s.redo);
+  const canUndo = useConfigStore((s) => s.canUndo());
+  const canRedo = useConfigStore((s) => s.canRedo());
+  const undoLabel = useConfigStore((s) => s.history.past[s.history.past.length - 1]?.label);
+  const redoLabel = useConfigStore((s) => s.history.future[s.history.future.length - 1]?.label);
+
+  // Cmd/Ctrl+Z and Cmd/Ctrl+Shift+Z keyboard shortcuts.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (!(e.metaKey || e.ctrlKey)) return;
+      if (e.key === 'z' && !e.shiftKey) {
+        if (canUndo) {
+          e.preventDefault();
+          undo();
+        }
+      } else if ((e.key === 'z' && e.shiftKey) || e.key === 'y') {
+        if (canRedo) {
+          e.preventDefault();
+          redo();
+        }
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [canUndo, canRedo, undo, redo]);
 
   const navItem = (to: string, label: string) => {
     const active = location.pathname === to;
@@ -27,6 +55,28 @@ export default function AppShell({ children }: AppShellProps) {
     );
   };
 
+  const historyBtn = (
+    onClick: () => void,
+    enabled: boolean,
+    label: string,
+    tooltipLabel: string | undefined,
+    glyph: string
+  ) => (
+    <button
+      onClick={onClick}
+      disabled={!enabled}
+      title={tooltipLabel ? `${label}: ${tooltipLabel}` : label}
+      aria-label={label}
+      className={`px-3 py-2 rounded-md text-sm transition-colors font-mono ${
+        enabled
+          ? 'text-[var(--color-text)] hover:bg-[var(--color-panel-2)]'
+          : 'text-[var(--color-text-muted)] cursor-not-allowed'
+      }`}
+    >
+      {glyph}
+    </button>
+  );
+
   return (
     <div className="h-full flex flex-col bg-[var(--color-bg)]">
       <header className="flex items-center gap-4 px-4 py-3 border-b border-[var(--color-border)] bg-[var(--color-panel)]">
@@ -40,6 +90,12 @@ export default function AppShell({ children }: AppShellProps) {
           {navItem('/library', 'Library')}
         </nav>
         <div className="flex-1" />
+        {config && (
+          <div className="flex items-center gap-1">
+            {historyBtn(undo, canUndo, 'Undo', undoLabel, '↶')}
+            {historyBtn(redo, canRedo, 'Redo', redoLabel, '↷')}
+          </div>
+        )}
         {fileName && (
           <div className="text-xs text-[var(--color-text-dim)]">
             {fileName}

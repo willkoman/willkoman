@@ -1,0 +1,50 @@
+"controller_mappings"
+{
+	"version"		"3"
+	"title"			"Conditionals + Unicode 测试 🎮"
+	"description"		"Exercises [$WIN32]/[$LINUX] conditional entries and non-Latin titles. Файл для тестирования."
+	"creator"		"76561197960287930"
+	"controller_type"	"controller_neptune"
+	"actions"
+	{
+		"Default"	{ "title" "デフォルト" "legacy_set" "0" }
+	}
+	"localization"
+	{
+		"english"
+		{
+			"title"		"Conditionals + Unicode"
+			"description"	"Sample"
+		}
+		"japanese"
+		{
+			"title"		"条件付き + ユニコード"
+			"description"	"サンプル"
+		}
+		"russian"
+		{
+			"title"		"Условия и юникод"
+			"description"	"Образец"
+		}
+	}
+	"group"
+	{
+		"id"		"0"
+		"mode"		"four_buttons"
+		"bindings"
+		{
+			"button_A"		"xinput_button A"		[$WIN32]
+			"button_A"		"key_press SPACE, Jump"		[!$WIN32]
+			"button_B"		"xinput_button B"
+		}
+	}
+	"preset"
+	{
+		"id"		"0"
+		"name"		"Default"
+		"group_source_bindings"
+		{
+			"0"		"button_diamond active"
+		}
+	}
+}

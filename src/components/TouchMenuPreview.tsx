@@ -1,20 +1,31 @@
 import type { CSSProperties } from 'react';
+import { useState } from 'react';
 import type { Group } from '../lib/schema';
-import { TOUCH_MENU_LAYOUTS, parseBinding } from '../lib/schema';
+import { TOUCH_MENU_LAYOUTS, parseBinding, setBinding } from '../lib/schema';
+import { useConfigStore } from '../lib/state/configStore';
+import BindingPicker from './BindingPicker';
 
 interface Props {
   group: Group;
 }
 
 /**
- * Renders the touch menu as the actual grid the user would see in-game.
- * Read-only preview (Phase 1); Phase 2 will make it click-to-bind.
+ * Visual touch-menu designer — the headline feature.
  *
- * If the layout is `verified: false` we render a warning strip — those
- * cell positions are our best guess and the user should not trust the
- * picker UI to match what they see in-game until verified.
+ * Each slot is a clickable target that opens the BindingPicker; applying a
+ * binding routes through the mutator façade (AST-first, patch-based undo).
+ * Empty slots render a dashed outline + plus glyph; bound slots show the
+ * label or the args.
+ *
+ * Layouts marked `verified: false` (counts 7/12/13) get a warning strip
+ * above the grid — those cell positions are our best guess pending eyeball-
+ * on-a-Deck verification.
  */
 export default function TouchMenuPreview({ group }: Props) {
+  const config = useConfigStore((s) => s.config);
+  const applyMutation = useConfigStore((s) => s.applyMutation);
+  const [activeSlot, setActiveSlot] = useState<number | null>(null);
+
   const countStr = group.settings.touch_menu_button_count;
   const count = countStr ? Number.parseInt(countStr, 10) : 0;
   const layout = TOUCH_MENU_LAYOUTS[count];
@@ -26,6 +37,14 @@ export default function TouchMenuPreview({ group }: Props) {
       </div>
     );
   }
+
+  const onSlotApply = (value: string) => {
+    if (activeSlot === null || !config) return;
+    const slotKey = `touch_menu_button_${activeSlot}`;
+    const result = setBinding(config, group.id, slotKey, value);
+    applyMutation(result);
+    setActiveSlot(null);
+  };
 
   return (
     <div className="space-y-2">
@@ -51,21 +70,36 @@ export default function TouchMenuPreview({ group }: Props) {
             gridRow: span ? `${row + 1} / span ${span[0]}` : row + 1,
             gridColumn: span ? `${col + 1} / span ${span[1]}` : col + 1,
           };
+          const bound = !!raw;
           return (
-            <div
+            <button
               key={i}
-              className="rounded bg-[var(--color-panel)] border border-[var(--color-border)] p-2 text-xs flex flex-col justify-between"
+              onClick={() => setActiveSlot(i)}
+              className={`rounded p-2 text-xs flex flex-col justify-between text-left transition-colors ${
+                bound
+                  ? 'bg-[var(--color-panel)] border border-[var(--color-border)] hover:border-[var(--color-accent-dim)]'
+                  : 'bg-transparent border border-dashed border-[var(--color-border)] text-[var(--color-text-muted)] hover:border-[var(--color-accent-dim)] hover:text-[var(--color-text-dim)]'
+              }`}
               style={style}
-              title={raw ?? '(unbound)'}
+              title={raw ?? `Slot ${i} — click to bind`}
             >
-              <span className="text-[var(--color-text-dim)] font-mono">{i}</span>
+              <span className="font-mono opacity-75">{i}</span>
               <span className="truncate">
-                {parsed?.label ?? parsed?.args.join(' ') ?? '(unbound)'}
+                {bound ? (parsed?.label ?? parsed?.args.join(' ') ?? raw) : '+ bind'}
               </span>
-            </div>
+            </button>
           );
         })}
       </div>
+
+      {activeSlot !== null && (
+        <BindingPicker
+          initial={group.bindings[`touch_menu_button_${activeSlot}`]}
+          title={`Slot ${activeSlot} · group #${group.id}`}
+          onApply={onSlotApply}
+          onCancel={() => setActiveSlot(null)}
+        />
+      )}
     </div>
   );
 }

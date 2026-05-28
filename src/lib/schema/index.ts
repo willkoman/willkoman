@@ -22,3 +22,5 @@ export {
   nextPresetId,
 } from './mutators';
 export type { MutationResult } from './mutators';
+export { validate } from './validation';
+export type { ValidationFinding, ValidationSeverity } from './validation';

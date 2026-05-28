@@ -1,0 +1,72 @@
+"controller_mappings"
+{
+	"version"		"3"
+	"title"			"Complex Action Layers"
+	"description"		"Multiple action sets + multiple action layers with parent_set_name references."
+	"creator"		"76561197960287930"
+	"controller_type"	"controller_neptune"
+	"actions"
+	{
+		"OnFoot"		{ "title" "On Foot"		"legacy_set" "0" }
+		"InVehicle"		{ "title" "In Vehicle"	"legacy_set" "0" }
+		"Menu"			{ "title" "Menu"		"legacy_set" "1" }
+	}
+	"action_layers"
+	{
+		"AimDownSights"
+		{
+			"title"			"Aim Down Sights"
+			"parent_set_name"	"OnFoot"
+			"set_layer"		"1"
+		}
+		"Crouch"
+		{
+			"title"			"Crouch"
+			"parent_set_name"	"OnFoot"
+			"set_layer"		"1"
+		}
+		"Boost"
+		{
+			"title"			"Boost"
+			"parent_set_name"	"InVehicle"
+			"set_layer"		"1"
+		}
+	}
+	"group"
+	{
+		"id"		"0"
+		"mode"		"four_buttons"
+		"bindings"
+		{
+			"button_A"	"xinput_button A"
+			"button_B"	"xinput_button B"
+		}
+	}
+	"preset"
+	{
+		"id"		"0"
+		"name"		"OnFoot"
+		"group_source_bindings"
+		{
+			"0"		"button_diamond active"
+		}
+	}
+	"preset"
+	{
+		"id"		"1"
+		"name"		"InVehicle"
+		"group_source_bindings"
+		{
+			"0"		"button_diamond active"
+		}
+	}
+	"preset"
+	{
+		"id"		"2"
+		"name"		"Menu"
+		"group_source_bindings"
+		{
+			"0"		"button_diamond active"
+		}
+	}
+}

@@ -6,7 +6,21 @@ All notable changes to Padsmith are documented here. Format follows
 
 ## [Unreleased]
 
-### Added (Phase 1 continued — mutator + undo + property tests)
+### Added (Phase 1 closeout + Phase 2 opening moves)
+
+- **Real-world fixture corpus expansion** — 4 new fixtures covering corners of the format the original 3 didn't reach:
+  - `hotbar-menu.vdf` — `hotbar_menu` mode sharing the `touch_menu_button_N` slot keys
+  - `conditionals-unicode.vdf` — `[$WIN32]`/`[!$WIN32]` conditionals + Japanese/Russian/emoji titles, multi-language `localization` block
+  - `ps5-trigger-effects.vdf` — `controller_type controller_ps5` with adaptive-trigger settings + verbatim `controller_caps` opaque value
+  - `complex-action-layers.vdf` — 3 action sets + 3 action layers with `parent_set_name` references
+- **`tests/vdf/fixture-corpus.test.ts`** — auto-discovers every `.vdf` in `tests/vdf/fixtures/` and runs round-trip + projection invariants on each. 7 fixtures × 6 assertions = 49 tests, growing automatically as the corpus grows.
+- **`lib/schema/validation.ts`** — pure-function validation engine with error/warn/info severity tiers. Detects: duplicate group ids, preset → missing group references, unverified touch-menu layouts (7/12/13 slots), >8 radial slots on button sources, >20 radial slots, always-on radial on gyro, orphan action sets, unknown binding verbs.
+- **`<ValidationStrip>`** — collapsible panel above the controller view; clicking a finding's group target jumps to that group in the inspector.
+- **`<BindingPicker>`** — modal dialog with Keyboard / Mouse / Gamepad / System / Raw tabs. Uses the `binding()` builder + `serializeBinding()`, returns a finished VDF string ready to feed into the `setBinding` mutator. Includes an editable "label" field that lands on every applied binding.
+- **Undo / Redo header buttons** + `Cmd/Ctrl+Z` / `Cmd/Ctrl+Shift+Z` / `Cmd/Ctrl+Y` shortcuts wired through the existing patch-based undo store. Buttons show the next undo/redo action's label on hover.
+- **Interactive `TouchMenuPreview`** — every slot is now a click target that opens the `BindingPicker`. Empty slots render dashed with a `+ bind` affordance; bound slots show the label or args. The first delivered piece of the Phase 2 headline feature.
+
+### Added (Phase 1 — mutator + undo + property tests)
 
 - **`lib/schema/mutators.ts`** — the AST-first mutator façade. Every editor edit must route through these: `setBinding`, `removeBinding`, `setGroupSetting`, `setGroupMode`, `addGroup`, `removeGroup`, `setMetaField`, `renameActionSet`, `addActionSet`, `removeActionSet`, `setPresetGroupSourceBinding`, `setActivatorBinding`, `appendActivatorBinding`. Each uses `immer.produceWithPatches` and returns the new config + forward + inverse patches.
 - **`lib/state/undo.ts`** — patch-based undo history with a 5 MB resident cap (default; configurable). Replaces the previous full-clone-per-edit stack that would have hit 200 MB on long sessions.

@@ -41,15 +41,15 @@ lists.
 
 ## Keyboard shortcuts
 
-| | |
-|---|---|
-| `Cmd/Ctrl+Z` | Undo |
-| `Cmd/Ctrl+Shift+Z` / `Ctrl+Y` | Redo |
-| `Cmd/Ctrl+K` | Command palette |
-| `Cmd/Ctrl+Shift+D` | Diff drawer |
-| `?` (header button) | Tutorial |
-| `⚙` (header button) | Settings (telemetry, shortcuts) |
-| `Esc` | Close any dialog |
+|                               |                                 |
+| ----------------------------- | ------------------------------- |
+| `Cmd/Ctrl+Z`                  | Undo                            |
+| `Cmd/Ctrl+Shift+Z` / `Ctrl+Y` | Redo                            |
+| `Cmd/Ctrl+K`                  | Command palette                 |
+| `Cmd/Ctrl+Shift+D`            | Diff drawer                     |
+| `?` (header button)           | Tutorial                        |
+| `⚙` (header button)           | Settings (telemetry, shortcuts) |
+| `Esc`                         | Close any dialog                |
 
 ## What it does
 

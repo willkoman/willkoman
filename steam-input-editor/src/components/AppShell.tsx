@@ -1,7 +1,9 @@
 import type { ReactNode } from 'react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useConfigStore } from '../lib/state/configStore';
+import CommandPalette from './CommandPalette';
+import DiffDrawer from './DiffDrawer';
 
 interface AppShellProps {
   children: ReactNode;
@@ -19,10 +21,23 @@ export default function AppShell({ children }: AppShellProps) {
   const undoLabel = useConfigStore((s) => s.history.past[s.history.past.length - 1]?.label);
   const redoLabel = useConfigStore((s) => s.history.future[s.history.future.length - 1]?.label);
 
-  // Cmd/Ctrl+Z and Cmd/Ctrl+Shift+Z keyboard shortcuts.
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  const [diffOpen, setDiffOpen] = useState(false);
+
+  // Cmd/Ctrl+Z / Shift+Z / Y / K shortcuts.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (!(e.metaKey || e.ctrlKey)) return;
+      if (e.key === 'k') {
+        e.preventDefault();
+        setPaletteOpen((v) => !v);
+        return;
+      }
+      if (e.key === 'd' && e.shiftKey) {
+        e.preventDefault();
+        setDiffOpen((v) => !v);
+        return;
+      }
       if (e.key === 'z' && !e.shiftKey) {
         if (canUndo) {
           e.preventDefault();
@@ -94,6 +109,25 @@ export default function AppShell({ children }: AppShellProps) {
           <div className="flex items-center gap-1">
             {historyBtn(undo, canUndo, 'Undo', undoLabel, '↶')}
             {historyBtn(redo, canRedo, 'Redo', redoLabel, '↷')}
+            <button
+              onClick={() => setDiffOpen(true)}
+              disabled={!dirty}
+              title={dirty ? 'Diff: original vs current (Ctrl+Shift+D)' : 'No changes to diff'}
+              className={`px-3 py-2 rounded-md text-sm transition-colors ${
+                dirty
+                  ? 'text-[var(--color-text)] hover:bg-[var(--color-panel-2)]'
+                  : 'text-[var(--color-text-muted)] cursor-not-allowed'
+              }`}
+            >
+              Diff
+            </button>
+            <button
+              onClick={() => setPaletteOpen(true)}
+              title="Command palette (Ctrl+K)"
+              className="px-3 py-2 rounded-md text-sm text-[var(--color-text-dim)] hover:text-[var(--color-text)] hover:bg-[var(--color-panel-2)] font-mono"
+            >
+              ⌘K
+            </button>
           </div>
         )}
         {fileName && (
@@ -104,6 +138,8 @@ export default function AppShell({ children }: AppShellProps) {
         )}
       </header>
       <main className="flex-1 overflow-hidden">{children}</main>
+      {paletteOpen && <CommandPalette onClose={() => setPaletteOpen(false)} />}
+      {diffOpen && <DiffDrawer onClose={() => setDiffOpen(false)} />}
     </div>
   );
 }

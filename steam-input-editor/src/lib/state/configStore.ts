@@ -15,6 +15,9 @@ import type { UndoState } from './undo';
 interface ConfigState {
   /** Currently-open config, or null if none. */
   config: SteamInputConfig | null;
+  /** Original on-disk text, captured at load. Drives the diff drawer.
+   *  Null until a file is opened. */
+  originalText: string | null;
   /** Source filename, if any. Used as the default for export. */
   fileName: string | null;
   /** Editor has unsaved changes since the last open or save. */
@@ -41,6 +44,7 @@ interface ConfigState {
 
 export const useConfigStore = create<ConfigState>((set, get) => ({
   config: null,
+  originalText: null,
   fileName: null,
   dirty: false,
   selectedActionSet: null,
@@ -51,8 +55,14 @@ export const useConfigStore = create<ConfigState>((set, get) => ({
     const ast = parseVdf(text);
     const config = configFromVdf(ast);
     const firstSet = config.actionSets[0]?.name ?? null;
+    // Capture the canonical serialization of the loaded text as the diff
+    // baseline. We use the parsed-then-serialized form (not the raw text)
+    // so cosmetic whitespace from the user's editor doesn't show as diff
+    // noise.
+    const baseline = serializeVdf(ast);
     set({
       config,
+      originalText: baseline,
       fileName: fileName ?? null,
       dirty: false,
       selectedActionSet: firstSet,
@@ -103,6 +113,7 @@ export const useConfigStore = create<ConfigState>((set, get) => ({
   reset: () =>
     set({
       config: null,
+      originalText: null,
       fileName: null,
       dirty: false,
       selectedActionSet: null,

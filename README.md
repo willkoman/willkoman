@@ -6,14 +6,50 @@ because Steam's built-in configurator buries the things that matter
 (touchpad menus, action sets, activators) under several layers of nested
 lists.
 
-> **Status:** v0.1.0 · Trust Layer. The parser, schema model, fixtures,
-> ESLint/Prettier/CI gates, and the visual identity are in place. The full
-> premium editor UI (Deck SVG canvas, bottom-sheet inspector, real
-> menu-designer interactions, undo/redo) is the next milestone.
+> **Status:** v1.0 ship candidate. The editor is feature-complete —
+> Deck SVG canvas, bottom-sheet inspector, interactive touch + radial
+> menu designers, binding picker, action set CRUD, command palette,
+> diff drawer, validation engine with pre-flight gate, first-run
+> tutorial, library view with IndexedDB recent files + 4 starter
+> templates, PWA install with auto-update, opt-in telemetry. 181 tests
+> passing. ~100 KB gzipped.
 >
 > The project currently lives under `willkoman/willkoman/steam-input-editor/`
 > on a feature branch; it will be extracted to its own repo at
 > `willkoman/padsmith` before public launch.
+
+## Headline features
+
+- **Touch + radial menu designers** — the things Steam's built-in UI
+  surfaces as vertical lists of "Menu Button N" become an actual grid
+  and an actual ring. Click to bind, drag to swap, slider to resize.
+- **Lossless round-trip** — your file goes in, your file comes out, only
+  the bits you changed are different. Golden-file snapshots in CI catch
+  any serializer drift. Diff drawer (`Ctrl+Shift+D`) makes the change
+  list visible.
+- **AST-first edits + patch-based undo** — every mutation is invertible.
+  200 edits = ~1 MB resident, not 200.
+- **Validation that respects you** — warnings, never blocks. Documented
+  anti-patterns surface as findings; pre-flight dialog gates export with
+  a clear "Export anyway" when errors present.
+- **Steam Deck-first ergonomics** — viewport switches the inspector to a
+  draggable bottom sheet at ≤1280px; touch targets enforced ≥44px;
+  warm-amber palette + paper-grain background; visual identity tuned for
+  the Deck's IPS panel.
+- **First-run tutorial + library + templates** — newcomers have a path,
+  power users have `Cmd+K` and keyboard shortcuts.
+
+## Keyboard shortcuts
+
+| | |
+|---|---|
+| `Cmd/Ctrl+Z` | Undo |
+| `Cmd/Ctrl+Shift+Z` / `Ctrl+Y` | Redo |
+| `Cmd/Ctrl+K` | Command palette |
+| `Cmd/Ctrl+Shift+D` | Diff drawer |
+| `?` (header button) | Tutorial |
+| `⚙` (header button) | Settings (telemetry, shortcuts) |
+| `Esc` | Close any dialog |
 
 ## What it does
 

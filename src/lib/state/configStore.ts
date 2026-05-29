@@ -12,6 +12,7 @@ import {
 } from './undo';
 import type { UndoState } from './undo';
 import { gameHintFromFilename, makeRecentId, putRecent } from './idb';
+import { track } from './telemetry';
 
 interface ConfigState {
   /** Currently-open config, or null if none. */
@@ -85,6 +86,7 @@ export const useConfigStore = create<ConfigState>((set, get) => ({
         /* swallow — local convenience, not load-blocking */
       });
     }
+    track('open file');
   },
 
   exportText: () => {

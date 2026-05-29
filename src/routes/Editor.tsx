@@ -1,17 +1,17 @@
+import { useState } from 'react';
 import { useConfigStore } from '../lib/state/configStore';
-import { saveVdfFile } from '../lib/fs/fileSystem';
 import { useIsDeckLayout } from '../lib/state/viewport';
 import ActionSetTabs from '../components/ActionSetTabs';
 import ControllerView from '../components/ControllerView';
 import GroupInspector from '../components/GroupInspector';
 import InspectorSurface from '../components/InspectorSurface';
+import PreflightDialog from '../components/PreflightDialog';
 import ValidationStrip from '../components/ValidationStrip';
 
 export default function Editor() {
   const config = useConfigStore((s) => s.config);
-  const fileName = useConfigStore((s) => s.fileName);
-  const exportText = useConfigStore((s) => s.exportText);
   const isDeck = useIsDeckLayout();
+  const [preflightOpen, setPreflightOpen] = useState(false);
 
   if (!config) {
     return (
@@ -21,10 +21,7 @@ export default function Editor() {
     );
   }
 
-  const onExport = async () => {
-    const name = fileName ?? 'controller_neptune.vdf';
-    await saveVdfFile(name, exportText());
-  };
+  const onExport = () => setPreflightOpen(true);
 
   return (
     <div
@@ -67,6 +64,7 @@ export default function Editor() {
           <GroupInspector />
         </InspectorSurface>
       )}
+      {preflightOpen && <PreflightDialog onClose={() => setPreflightOpen(false)} />}
     </div>
   );
 }

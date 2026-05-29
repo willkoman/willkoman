@@ -6,6 +6,31 @@ All notable changes to Padsmith are documented here. Format follows
 
 ## [Unreleased]
 
+### Added (Phase 3.2 + Phase 4 — tutorial, pre-flight, PWA, telemetry)
+
+- **First-run tutorial** (`<Tutorial>` + `useTutorial()`) — 6-step overlay
+  shown on first visit; "Don't show again" persists via localStorage; the
+  `?` button in the header re-opens it on demand. Arrow keys + Enter
+  navigate; Escape dismisses.
+- **Pre-flight export dialog** (`<PreflightDialog>`) — replaces the
+  bare "Export .vdf" button. Groups validation findings by severity,
+  jumps to the offending group on click, gates the actual download with
+  a clearly-labelled "Export anyway" when errors are present. Padsmith
+  still never refuses to save.
+- **PWA service worker** via vite-plugin-pwa with `registerType:
+autoUpdate` + Workbox `cleanupOutdatedCaches`. Hotfixes reach existing
+  users on the next session rather than weeks-stale cache. `dist/sw.js`
+  - `workbox-*.js` ship in every build. Manifest declares the warm-amber
+    theme color and standalone display.
+- **Opt-in telemetry** (`lib/state/telemetry.ts`) — Plausible-compatible
+  fetch to `/api/event`. Off by default; settings dialog has the toggle.
+  Tracked events: `open file`, `open template`, `export`. No file
+  contents, no IDs, no cookies. Endpoint configured via
+  `VITE_PLAUSIBLE_DOMAIN` at build time; unset → all calls are no-ops.
+  4 unit tests.
+- **In-app settings dialog** (`<SettingsDialog>`, ⚙ button in header) —
+  current contents: telemetry opt-in + keyboard-shortcut reference.
+
 ### Added (Phase 2 — action set CRUD, command palette, diff drawer)
 
 - **Action set CRUD UI** in `<ActionSetTabs>` — add via `+ add`, rename in

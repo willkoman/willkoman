@@ -4,6 +4,8 @@ import { Link, useLocation } from 'react-router-dom';
 import { useConfigStore } from '../lib/state/configStore';
 import CommandPalette from './CommandPalette';
 import DiffDrawer from './DiffDrawer';
+import SettingsDialog from './SettingsDialog';
+import Tutorial, { useTutorial } from './Tutorial';
 
 interface AppShellProps {
   children: ReactNode;
@@ -23,6 +25,8 @@ export default function AppShell({ children }: AppShellProps) {
 
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [diffOpen, setDiffOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const tutorial = useTutorial();
 
   // Cmd/Ctrl+Z / Shift+Z / Y / K shortcuts.
   useEffect(() => {
@@ -130,6 +134,22 @@ export default function AppShell({ children }: AppShellProps) {
             </button>
           </div>
         )}
+        <button
+          onClick={tutorial.openOnDemand}
+          title="Tutorial"
+          className="px-3 py-2 rounded-md text-sm text-[var(--color-text-dim)] hover:text-[var(--color-text)] hover:bg-[var(--color-panel-2)]"
+          aria-label="Open tutorial"
+        >
+          ?
+        </button>
+        <button
+          onClick={() => setSettingsOpen(true)}
+          title="Settings"
+          className="px-3 py-2 rounded-md text-sm text-[var(--color-text-dim)] hover:text-[var(--color-text)] hover:bg-[var(--color-panel-2)]"
+          aria-label="Open settings"
+        >
+          ⚙
+        </button>
         {fileName && (
           <div className="text-xs text-[var(--color-text-dim)]">
             {fileName}
@@ -140,6 +160,15 @@ export default function AppShell({ children }: AppShellProps) {
       <main className="flex-1 overflow-hidden">{children}</main>
       {paletteOpen && <CommandPalette onClose={() => setPaletteOpen(false)} />}
       {diffOpen && <DiffDrawer onClose={() => setDiffOpen(false)} />}
+      {settingsOpen && <SettingsDialog onClose={() => setSettingsOpen(false)} />}
+      <Tutorial
+        open={tutorial.open}
+        step={tutorial.step}
+        setStep={tutorial.setStep}
+        dontShowAgain={tutorial.dontShowAgain}
+        setDontShowAgain={tutorial.setDontShowAgain}
+        close={tutorial.close}
+      />
     </div>
   );
 }

@@ -29,6 +29,7 @@ export default [
         FileSystemDirectoryHandle: 'readonly',
         HTMLInputElement: 'readonly',
         HTMLDivElement: 'readonly',
+        HTMLUListElement: 'readonly',
         HTMLElement: 'readonly',
         KeyboardEvent: 'readonly',
         MouseEvent: 'readonly',

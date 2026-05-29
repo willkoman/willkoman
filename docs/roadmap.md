@@ -70,17 +70,20 @@ Goal: the headline use case ships.
 - [x] **Binding picker dialog** — Keyboard / Mouse / Gamepad / System / Raw
       tabs; editable label field; uses the `binding()` builder. Icons
       bundled in Phase 3.
-- [ ] **Action set + action layer CRUD** with explicit nested-menu
-      wiring (auto-creates ADD_LAYER / REMOVE_LAYER bindings)
+- [x] **Action set CRUD** (add / inline rename / remove with
+      cascade-clean) wired through the mutator façade. Layer CRUD with
+      explicit nested-menu wiring (auto-creates ADD_LAYER /
+      REMOVE_LAYER bindings) still pending.
 - [x] **Undo/redo visible** in the header with hover-tooltip showing
       what each step changed; Cmd/Ctrl+Z / Shift+Z / Y bound
-- [ ] **Command palette** (Cmd/Ctrl+K) for fast jump-to-action-set, jump
-      -to-group, change-input-style
+- [x] **Command palette** (Cmd/Ctrl+K) — fuzzy search across action
+      sets, groups, input-style changes, undo/redo/export. Built in-
+      house, no fuse.js dep
 - [x] **Validation strip** docked above the controller view
       (anti-pattern warnings, missing-group-ref errors, undocumented
       slot counts); click a finding to jump to its group
-- [ ] **Diff drawer** (left: original VDF text, right: current, scrolled
-      together) — the trust promise made visible
+- [x] **Diff drawer** (Ctrl+Shift+D) — original-vs-current side-by-
+      side. LCS line diff with "Changes only" / "All" toggle.
 
 Ship criterion: the full success scenario in `architecture.md` is
 performable in under 8 minutes, no docs read.

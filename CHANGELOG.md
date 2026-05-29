@@ -6,6 +6,35 @@ All notable changes to Padsmith are documented here. Format follows
 
 ## [Unreleased]
 
+### Added (Phase 2 — action set CRUD, command palette, diff drawer)
+
+- **Action set CRUD UI** in `<ActionSetTabs>` — add via `+ add`, rename in
+  place (double-click or pencil icon), remove via ✕ (disabled on the last
+  remaining set). Hover-revealed controls; Enter/Escape commit or cancel
+  the rename. All edits route through `renameActionSet` / `addActionSet` /
+  `removeActionSet` mutators and land in the patch undo stack.
+- **`<CommandPalette>`** (Cmd/Ctrl+K) — dependency-free fuzzy palette. Builds
+  commands from current store state: jump to any action set, jump to any
+  group, change selected group's input style to any of the 17 catalog
+  entries, undo, redo, export. Arrow keys + Enter to navigate; Escape or
+  click-outside to dismiss; auto-scroll keeps cursor visible.
+- **`lib/state/fuzzy.ts`** — fuzzy scorer with prefix / consecutive /
+  word-boundary / CamelCase heuristics. 9 unit tests cover ranking
+  invariants. No external dependency (fzf-class scoring in ~70 LOC).
+- **`<DiffDrawer>`** (Cmd/Ctrl+Shift+D, also via header "Diff" button) —
+  side-by-side original-vs-current text. Original is the canonical
+  serialization captured at load. Line-level LCS diff with added/
+  removed/unchanged tinting; "Changes only" / "All lines" toggle. The
+  drawer disables when nothing's dirty; if a user has zero changes the
+  drawer shows the byte-stable confirmation message. The trust promise
+  made visible.
+- **`lib/state/lineDiff.ts`** — LCS line diff with 1-based line numbers
+  on both sides, 10k-line safety cap. 7 unit tests covering identical /
+  replacement / pure insertion / pure deletion / divergence / line
+  numbering.
+- **`useConfigStore.originalText`** — canonical serialization captured at
+  file open; null when no file loaded; reset on `reset()`.
+
 ### Added (Phase 2 visual core)
 
 - **`<DeckSvg>`** — stylised top-down Steam Deck illustration with hit

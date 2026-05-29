@@ -11,6 +11,7 @@ import {
   undo as undoState,
 } from './undo';
 import type { UndoState } from './undo';
+import { gameHintFromFilename, makeRecentId, putRecent } from './idb';
 
 interface ConfigState {
   /** Currently-open config, or null if none. */
@@ -55,10 +56,7 @@ export const useConfigStore = create<ConfigState>((set, get) => ({
     const ast = parseVdf(text);
     const config = configFromVdf(ast);
     const firstSet = config.actionSets[0]?.name ?? null;
-    // Capture the canonical serialization of the loaded text as the diff
-    // baseline. We use the parsed-then-serialized form (not the raw text)
-    // so cosmetic whitespace from the user's editor doesn't show as diff
-    // noise.
+    // Canonical serialization of the loaded text as the diff baseline.
     const baseline = serializeVdf(ast);
     set({
       config,
@@ -69,6 +67,24 @@ export const useConfigStore = create<ConfigState>((set, get) => ({
       selectedGroupId: null,
       history: emptyUndoState(),
     });
+    // Best-effort: record in the recent-files store. Don't block load on
+    // IDB errors (Firefox private mode, quota exhaustion).
+    if (fileName) {
+      const openedAt = Date.now();
+      const id = makeRecentId(fileName, text.length, openedAt);
+      const entry = {
+        id,
+        filename: fileName,
+        text,
+        openedAt,
+        ...(gameHintFromFilename(fileName) !== undefined
+          ? { gameHint: gameHintFromFilename(fileName)! }
+          : {}),
+      };
+      void putRecent(entry).catch(() => {
+        /* swallow — local convenience, not load-blocking */
+      });
+    }
   },
 
   exportText: () => {

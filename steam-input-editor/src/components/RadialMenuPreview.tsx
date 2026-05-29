@@ -9,6 +9,7 @@ import {
 } from '../lib/schema';
 import { useConfigStore } from '../lib/state/configStore';
 import BindingPicker from './BindingPicker';
+import MenuPositionSliders from './MenuPositionSliders';
 
 interface Props {
   group: Group;
@@ -154,6 +155,8 @@ export default function RadialMenuPreview({ group }: Props) {
         />
         <span className="font-mono w-8 text-right">{count}</span>
       </div>
+
+      <MenuPositionSliders group={group} />
 
       {activeSlot !== null && (
         <BindingPicker

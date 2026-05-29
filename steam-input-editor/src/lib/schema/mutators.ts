@@ -146,6 +146,44 @@ export function removeBinding(
   });
 }
 
+/**
+ * Swap two slots' bindings within a group.
+ *
+ * When both slots are present, the swap is in-place (positions preserved),
+ * so swap-then-swap-back is byte-stable. When only one side is bound, the
+ * binding moves to the other slot (the empty slot gets appended at the end).
+ * When both sides are empty, this is a no-op.
+ */
+export function swapBindings(
+  config: SteamInputConfig,
+  groupId: number,
+  slotA: string,
+  slotB: string
+): MutationResult {
+  return mutate(config, `swap ${slotA} ↔ ${slotB} on group #${groupId}`, (draft) => {
+    const group = findGroupBlock(draft, groupId);
+    if (!group) throw new Error(`Group ${groupId} not found`);
+    const bindings = ensureBlock(group, 'bindings');
+    const a = bindings.entries.find((e) => e.key === slotA);
+    const b = bindings.entries.find((e) => e.key === slotB);
+    const aVal = typeof a?.value === 'string' ? a.value : undefined;
+    const bVal = typeof b?.value === 'string' ? b.value : undefined;
+
+    if (a && b && aVal !== undefined && bVal !== undefined) {
+      // Both present and string-valued: in-place value swap preserves order.
+      a.value = bVal;
+      b.value = aVal;
+      return;
+    }
+    // Otherwise, one side is empty (or non-string). Fall back to
+    // remove + add; not byte-stable but semantically correct.
+    removeChild(bindings, slotA);
+    removeChild(bindings, slotB);
+    if (bVal !== undefined) bindings.entries.push({ key: slotA, value: bVal });
+    if (aVal !== undefined) bindings.entries.push({ key: slotB, value: aVal });
+  });
+}
+
 export function setGroupSetting(
   config: SteamInputConfig,
   groupId: number,

@@ -92,30 +92,32 @@ performable in under 8 minutes, no docs read.
 
 Goal: comfortable to use across many configs over time.
 
-- [ ] **Library view** — recent files, per-game grouping (auto from
-      `creator` + `title` + heuristics on filename)
-- [ ] **Templates** — start from "Empty Deck (Neptune)", "FPS preset",
-      "Strategy/RTS preset", "Emulation hotbar preset"
+- [x] **Library view** — recent files (IndexedDB, 100-entry cap, delete
+      button per row); per-game heuristic from filename
+- [x] **Templates** — 4 starter configs: Empty Deck (Neptune), FPS
+      preset, Strategy/RTS, Emulation hotbar. All pass validation.
 - [ ] **Import from SteamInputDB URL** (coordinated with Alia5 first —
       see THIRD_PARTY_NOTICES)
-- [ ] **In-app tutorial** — first-run, dismissable, walks through opening
-      the Deck default config and editing a touch menu slot
-- [ ] **Validation report** — a "Pre-flight" panel before export listing
-      every warning with one-click fixes
+- [x] **In-app tutorial** — first-run, dismissable, 6-step overlay
+- [x] **Pre-flight validation dialog** — gating the export with a
+      severity-grouped findings panel
 
 ## Phase 4 — Polishing for the Deck (0.4.0)
 
 Goal: feels like it belongs on the Deck.
 
-- [ ] Touch-target audit pass (everything ≥ 44px on Deck viewport)
-- [ ] **PWA install** with a service worker that respects hotfix releases
-      (no stale-cache lockout)
-- [ ] In-app help: opt-out telemetry toggle, file location guide per OS,
-      keyboard shortcut overlay (press `?`)
+- [x] Touch-target enforcement at ≤1280px viewport (since Phase 2)
+- [x] **PWA install** via vite-plugin-pwa; autoUpdate + cleanupOutdatedCaches
+      so hotfixes land on the next session, no stale-cache lockout
+- [x] In-app settings dialog (⚙) with telemetry toggle + keyboard-shortcut
+      reference; tutorial (`?` button) for newcomers
 - [ ] Marketing assets: 12-second screen-cap GIF in README, hosted
       landing page on `padsmith.app`
-- [ ] **Opt-in telemetry**: Plausible (cookieless page-views) + Sentry
-      (errors only; `beforeSend` scrubs every file path and config content)
+- [x] **Opt-in telemetry**: Plausible-compatible /api/event POST; off
+      by default; no file contents, no IDs, no cookies; endpoint set via
+      VITE_PLAUSIBLE_DOMAIN at build time
+- [ ] Sentry error reporting (deferred — needs domain & DSN before it
+      can ship)
 
 ## Phase 5 — Native integration (0.5.0)
 

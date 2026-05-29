@@ -6,6 +6,7 @@ export { configFromVdf, configToVdf, rawGroupEntries } from './transform';
 export {
   setBinding,
   removeBinding,
+  swapBindings,
   setGroupSetting,
   setGroupMode,
   addGroup,

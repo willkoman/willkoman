@@ -93,6 +93,53 @@ Chrome from Discover for the directly-save flow).
 3. Visit the local dev URL or the hosted build
 4. Drop your `controller_*.vdf` into the editor
 
+## Deploying
+
+Build target is **`willko.dev/padsmith/`** — `vite.config.ts` sets
+`base: '/padsmith/'` so every asset, the PWA manifest, the service
+worker, and the React Router basename all resolve under that prefix.
+
+```bash
+npm run build      # emits dist/ with /padsmith/-prefixed asset URLs
+```
+
+Then point your web server at `dist/`. Two things the server must do:
+
+1. **SPA fallback** — any request to `/padsmith/*` that doesn't match an
+   on-disk file must serve `/padsmith/index.html` so React Router can
+   pick up the route. Example nginx:
+
+   ```nginx
+   location /padsmith/ {
+     alias /var/www/padsmith/;
+     try_files $uri $uri/ /padsmith/index.html;
+   }
+   ```
+
+   Caddy equivalent:
+
+   ```caddy
+   handle_path /padsmith/* {
+     root * /var/www/padsmith
+     try_files {path} /index.html
+     file_server
+   }
+   ```
+
+2. **HTTPS** — the PWA service worker only registers over HTTPS or
+   `localhost`. Without it, install + offline don't work but the
+   editor itself still functions.
+
+To deploy at a different subpath (or at the root), pass `VITE_BASE`:
+
+```bash
+VITE_BASE=/foo/ npm run build      # /foo/ subpath
+VITE_BASE=/      npm run build      # root
+```
+
+`src/main.tsx` reads `import.meta.env.BASE_URL` so the router's
+basename always matches the build's base.
+
 ## The Trust Layer (what shipped in 0.1.0)
 
 The first specialist audit caught data-corruption-risk bugs in the

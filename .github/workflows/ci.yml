@@ -2,14 +2,8 @@ name: ci
 
 on:
   push:
-    branches: [main]
-    paths: ['steam-input-editor/**']
+    branches: [main, padsmith]
   pull_request:
-    paths: ['steam-input-editor/**']
-
-defaults:
-  run:
-    working-directory: steam-input-editor
 
 jobs:
   build:
@@ -20,7 +14,6 @@ jobs:
         with:
           node-version: '22'
           cache: 'npm'
-          cache-dependency-path: steam-input-editor/package-lock.json
       - run: npm ci
       - run: npm run lint
       - run: npm run format:check
@@ -28,8 +21,7 @@ jobs:
       - run: npm test
       - run: npm run build
       - uses: actions/upload-artifact@v4
-        if: github.event_name == 'pull_request'
         with:
           name: padsmith-dist-${{ github.sha }}
-          path: steam-input-editor/dist
-          retention-days: 7
+          path: dist
+          retention-days: 14

@@ -14,9 +14,10 @@ lists.
 > templates, PWA install with auto-update, opt-in telemetry. 181 tests
 > passing. ~100 KB gzipped.
 >
-> The project currently lives under `willkoman/willkoman/steam-input-editor/`
-> on a feature branch; it will be extracted to its own repo at
-> `willkoman/padsmith` before public launch.
+> This is the `padsmith` branch of `willkoman/willkoman` — a flattened
+> view where everything sits at root, suitable for cloning directly
+> onto a server or for pushing to a standalone `willkoman/padsmith`
+> repo. See [`DEPLOY.md`](DEPLOY.md) for the workflow.
 
 ## Headline features
 
@@ -73,10 +74,9 @@ lists.
 ## Get started
 
 ```bash
-cd steam-input-editor
 npm install
 npm run dev          # opens http://localhost:5173
-npm test             # vitest, 49 tests
+npm test             # vitest, 181 tests
 npm run lint         # eslint
 npm run typecheck
 npm run build        # static SPA into dist/
@@ -139,6 +139,10 @@ VITE_BASE=/      npm run build      # root
 
 `src/main.tsx` reads `import.meta.env.BASE_URL` so the router's
 basename always matches the build's base.
+
+**For a fuller deploy guide** — server-side cache headers, nginx/Caddy
+config with proper PWA cache-busting, an automated `scripts/deploy.sh`,
+and verification curls — see [`DEPLOY.md`](DEPLOY.md).
 
 ## The Trust Layer (what shipped in 0.1.0)
 
